@@ -28,3 +28,7 @@ spring:
   jackson:
     serialization:
       fail-on-empty-beans: false
+      
+jwt:
+  secretKey: intime123
+  expiration-milliseconds: 600000 #10분
