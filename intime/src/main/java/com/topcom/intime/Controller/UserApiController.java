@@ -20,16 +20,6 @@ public class UserApiController {
 	private final UserRepository userRepository;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-	@GetMapping("/home")
-	public String home() {
-		return "<h1>home</h1>";
-	}
-	
-	@PostMapping("token")
-	public String token() {
-		return "<h1>hello</h1>";
-	}
-	
 	@PostMapping("join")
 	public String join(@RequestBody User user) {
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -39,7 +29,7 @@ public class UserApiController {
 	}
 	
 	@GetMapping("/api/user")
-	public String user() {//여기서 authentication은 세션에서 생성된 객체를 갖고오는거임
+	public String user() {
 		return "user";
 	}
 	

@@ -13,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -31,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 	private final AuthenticationManager authenticationManager;
+	private final String secretKey;
 	
 	// /login 요청 후 로그인 시도를 위해 실행되는 함수
 	@Override
@@ -39,6 +39,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		
 		// 1.username, password 받아서
 		System.out.println("JwtAuthenticationFilter : 로그인 시도중");
+
 //		try {
 //			BufferedReader br = request.getReader();
 //			
@@ -67,11 +68,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 			// authentication이 생성되었다는 것은 DB 데이터와 로그인 Request 데이터가 일치하여 인증 되었다는 뜻, 즉 로그인 되었다는 뜻
 			PrincipalDetails principalDetails = (PrincipalDetails)authentication.getPrincipal();
-			System.out.println(principalDetails.getUser().getEmail());
-			System.out.println(principalDetails.getUsername());
+
 			return authentication; // authentication 객체가 Session 영역에 저장
-			//리턴의 이유는 권한 관리를 Security가 대신 해주기 때문에 편하려고 하는거임
-			//굳이 JWT토큰을 사용하면서 세션을 만들 이유가 없음. 근데 단지 권한 처리 때문에 session에 넣어준다.
+											//리턴의 이유는 권한 관리를 Security가 대신 해주기 때문에 편하려고 하는거임
+											//굳이 JWT토큰을 사용하면서 세션을 만들 이유가 없음. 근데 단지 권한 처리 때문에 session에 넣어준다.
 		} catch (StreamReadException e) {
 			e.printStackTrace();
 		} catch (DatabindException e) {
@@ -98,7 +98,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 				.withExpiresAt(new Date(System.currentTimeMillis() + 60000*10))//10min
 				.withClaim("id", principalDetails.getUser().getId())
 				.withClaim("email", principalDetails.getUser().getEmail())
-				.sign(Algorithm.HMAC512("intime123"));
+				.sign(Algorithm.HMAC512(secretKey));
 		
 		response.addHeader("Authorization", "Bearer " + jwtToken);
 	}

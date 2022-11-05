@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,11 +23,13 @@ import com.topcom.intime.repository.UserRepository;
 // 권한이 필요한 요청이 들어올 때 해당 필터 거침
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
+	private final String secretKey;
 	
-	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
+	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository, String secretKey) {
 		super(authenticationManager);
 		this.userRepository = userRepository;
+		this.secretKey = secretKey;
 	}
 
 	// 해당 필터 실행시 위 생성자 함수 대신 아래 함수 실행
@@ -35,8 +38,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 			throws IOException, ServletException {
 		
 		String jwtHeader = request.getHeader("Authorization");
-		System.out.println("jwtHeader : " + jwtHeader);
-		
+
 		// Header가 있는지 확인
 		if(jwtHeader == null || !jwtHeader.startsWith("Bearer")) {
 			chain.doFilter(request, response);
@@ -47,7 +49,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		String jwtToken = request.getHeader("Authorization").replace("Bearer ", "");
 		
 		String email = 
-				JWT.require(Algorithm.HMAC512("intime123")).build().verify(jwtToken).getClaim("email").asString();
+				JWT.require(Algorithm.HMAC512(secretKey)).build().verify(jwtToken).getClaim("email").asString();
 		
 		if(email != null) {
 			User userEntity = userRepository.findByEmail(email);

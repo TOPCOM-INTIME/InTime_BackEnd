@@ -1,5 +1,6 @@
 package com.topcom.intime.Config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,6 +26,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private final CorsFilter corsFilter;
 	private final UserRepository userRepository;
+	
+	@Value("${jwt.secretKey}")
+	private String secretKey;
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
@@ -39,8 +43,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.addFilter(corsFilter)//모든 요청 CorsConfig에서 만든 corsFilter 거침
 		.formLogin().disable()
 		.httpBasic().disable()
-		.addFilter(new JwtAuthenticationFilter(authenticationManager()))
-		.addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
+		.addFilter(new JwtAuthenticationFilter(authenticationManager(), secretKey))
+		.addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository, secretKey))
 		.authorizeRequests()
 		.antMatchers("/api/user/**")		
 		.access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
