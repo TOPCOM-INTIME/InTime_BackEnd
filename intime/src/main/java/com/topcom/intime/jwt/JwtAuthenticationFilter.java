@@ -31,6 +31,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 	private final AuthenticationManager authenticationManager;
 	private final String secretKey;
+	private final long tokenExpireTime;
 	
 	// /login 요청 후 로그인 시도를 위해 실행되는 함수
 	@Override
@@ -95,7 +96,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		// HASH 암호 방식
 		String jwtToken = JWT.create()
 				.withSubject("IntimeLoginToken")
-				.withExpiresAt(new Date(System.currentTimeMillis() + 60000*10))//10min
+				.withExpiresAt(new Date(System.currentTimeMillis() + tokenExpireTime))//10min
 				.withClaim("id", principalDetails.getUser().getId())
 				.withClaim("email", principalDetails.getUser().getEmail())
 				.sign(Algorithm.HMAC512(secretKey));

@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.auth0.jwt.JWT;
@@ -52,7 +53,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 				JWT.require(Algorithm.HMAC512(secretKey)).build().verify(jwtToken).getClaim("email").asString();
 		
 		if(email != null) {
-			User userEntity = userRepository.findByEmail(email);
+			User userEntity = userRepository.findByEmail(email)
+					.orElseThrow(()->new UsernameNotFoundException("UserEmail not found with email : " + email));
 
 			PrincipalDetails principalDetails = new PrincipalDetails(userEntity);
 			

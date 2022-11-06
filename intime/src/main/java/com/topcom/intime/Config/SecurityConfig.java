@@ -29,6 +29,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Value("${jwt.secretKey}")
 	private String secretKey;
+	@Value("${jwt.expiration-milliseconds}")
+	private long tokenExpireTime;
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
@@ -43,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.addFilter(corsFilter)//모든 요청 CorsConfig에서 만든 corsFilter 거침
 		.formLogin().disable()
 		.httpBasic().disable()
-		.addFilter(new JwtAuthenticationFilter(authenticationManager(), secretKey))
+		.addFilter(new JwtAuthenticationFilter(authenticationManager(), secretKey, tokenExpireTime))
 		.addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository, secretKey))
 		.authorizeRequests()
 		.antMatchers("/api/user/**")		
