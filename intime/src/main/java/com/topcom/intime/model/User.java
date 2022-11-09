@@ -1,54 +1,62 @@
 package com.topcom.intime.model;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 @Builder
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Entity //User 클래스가 MySQL에 자동으로 테이블이 생성된다.
 public class User {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY) // DB넘버링 전략 따라감
+	@GeneratedValue(strategy=GenerationType.IDENTITY) //넘버링 전략 : 연결한 DBMS의 정책에 따름
 	private int id;
 	
-	@Column(nullable = false, length = 30)
-	private String username;
-	
-	@Column(nullable = false, length = 100)
-	private String password;
-	
-	@Column(nullable = false, length = 50)
+	@Column(nullable=false, length=30, unique = true)
 	private String email;
 	
-	@ColumnDefault(" 'user' ")
-	private String role; //Enum사용 예정
+	@Column(nullable=false, length=100)
+	private String password;
 	
-	@CreationTimestamp //시간 자동 입력
+	@Column(unique = true)
+	private String username;
+
+	@Column
+	private String roles; // USER , ADMIN
+	
+	private String oauth; //kakao or google
+	
+	@CreationTimestamp //시간이 자동으로 입력됨
 	private Timestamp createDate;
 	
+	public List<String> getRoleList() {
+		if(this.roles.length() > 0) {
+			return Arrays.asList(this.roles.split(","));
+		}
+		return new ArrayList<>();
+	}
 	
-//	@Builder // Builder하면 arguments를 모두 안넣어도 되고 원하는 알규만 너흥ㄹ 수 있음
-//	public User(int id, String username, String password, String email) {
-//		super();
-//		this.id = id;
-//		this.username = username;
-//		this.password = password;
-//		this.email = email;
-//	}	
+	
+	
 }

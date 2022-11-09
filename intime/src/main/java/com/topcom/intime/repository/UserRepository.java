@@ -11,7 +11,8 @@ import com.topcom.intime.model.User;
 public interface UserRepository extends JpaRepository<User, Integer>{
 
 	//Select * From user Where username = 1?;
-	Optional<User> findByUsername(String username);
+    Optional<User> findByEmail(String email); //query method
+//	public User findByEmail(String email);
 
 }
 
