@@ -16,12 +16,17 @@ public interface ReadyPatternRepository extends JpaRepository<ReadyPattern, Inte
 	public int mSave(String name, int time, int userId, Integer groupId, Integer orderInGroup);
 	
 	@Modifying
-	@Query(value = "UPDATE ReadyPattern rp SET rp.ReadyPatternGroupId = :groupId, rp.orderInGroup = :order WHERE rp.id = :patternId", nativeQuery = true)
-	public int mUpdateGroupId(@Param("patternId") int pid, @Param("order") Integer order, @Param("groupId") int gid);
+	@Query(value = "UPDATE ReadyPattern rp SET rp.ReadyPatternGroupId = :groupId, rp.orderInGroup = :order WHERE rp.id = :patternId AND rp.userId = :uid", 
+	nativeQuery = true)
+	public int mUpdateGroupIdOfPatterns(@Param("uid") int uid, @Param("patternId") int pid, @Param("order") Integer order, @Param("groupId") int gid);
+	
+	@Modifying
+	@Query(value = "SELECT * FROM ReadyPattern WHERE userId = :uid", nativeQuery = true)
+	public List<ReadyPattern> findAllByUid(@Param("uid")int uid);
 	
 	@Modifying
 	@Query(value = "SELECT * FROM ReadyPattern WHERE userId = :uid AND ReadyPatternGroupId IS NULL", nativeQuery = true)
-	public List<ReadyPattern> findAllByUid(@Param("uid")int uid);
+	public List<ReadyPattern> findOriginsByUid(@Param("uid")int uid);
 	
 	//@Query("update User u set u.status = :status where u.name = :name")
 //	int updateUserSetStatusForName(@Param("status") Integer status, 

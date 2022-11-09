@@ -19,19 +19,18 @@ public class ReadyPatternService {
 	private ReadyPatternRepository readyPatternRepository;
 
 	@Transactional
-	public void create(ReadyPatternReqDto readyPatternReqDto) {
-		System.out.println("TAG2 : " + readyPatternReqDto);
+	public void save_pattern(int uid, ReadyPatternReqDto pattern) {
 
-		readyPatternRepository.mSave(readyPatternReqDto.getName(), readyPatternReqDto.getTime(), 
-				readyPatternReqDto.getUserId(), readyPatternReqDto.getGroupId(), readyPatternReqDto.getOrderInGroup());
+		readyPatternRepository.mSave(pattern.getName(), pattern.getTime(), 
+				uid, pattern.getGroupId(), pattern.getOrderInGroup());
 
 	}
 	
 	@Transactional
-	public void create2(List<ReadyPatternReqDto> patternReqDtoList) {
-		for(ReadyPatternReqDto dto : patternReqDtoList) {
-			readyPatternRepository.mSave(dto.getName(), dto.getTime(), 
-					dto.getUserId(), dto.getGroupId(), dto.getOrderInGroup());
+	public void save_patternList(int uid, int gid, List<ReadyPatternReqDto> patternList) {
+		for(ReadyPatternReqDto pattern : patternList) {
+			readyPatternRepository.mSave(pattern.getName(), pattern.getTime(), 
+					uid, gid, pattern.getOrderInGroup());
 		}
 	}
 	
@@ -53,10 +52,10 @@ public class ReadyPatternService {
 //	}
 	
 	@Transactional
-	public void updateGroupId(int gid, List<ReadyPatternReqDto> patternDtoList) {
+	public void UpdateGroupIdOfPatterns(int uid, int gid, List<ReadyPatternReqDto> patternList) {
 		
-		for (ReadyPatternReqDto dto : patternDtoList) {
-			readyPatternRepository.mUpdateGroupId(dto.getId(), dto.getOrderInGroup(), gid);
+		for (ReadyPatternReqDto pattern : patternList) {
+			readyPatternRepository.mUpdateGroupIdOfPatterns(uid, pattern.getId(), pattern.getOrderInGroup(), gid);
 		}
 	}
 	
@@ -66,16 +65,25 @@ public class ReadyPatternService {
 		List<ReadyPattern> patterns = readyPatternRepository.findAllByUid(uid);
 		List<ReadyPatternResDto> dtoList = new ArrayList<>();
 		for (ReadyPattern rp: patterns) {
-			if (rp.getReadyPatternGroup() != null) {
-				dtoList.add(new ReadyPatternResDto(rp.getId(), rp.getName(), rp.getTime(), rp.getUser().getId(), rp.getReadyPatternGroup().getId(), rp.getOrderInGroup()));
-			}
-			else {
-				dtoList.add(new ReadyPatternResDto(rp.getId(), rp.getName(), rp.getTime(), rp.getUser().getId(), null, null));
-			}
+			dtoList.add(new ReadyPatternResDto(rp.getId(), rp.getName(), rp.getTime(), rp.getUser().getId(), null, null));
 		}
-		
-		System.out.println("TAG : " + dtoList);
 		return dtoList;
+	}
+	
+	@Transactional
+	public List<ReadyPatternResDto> findOriginsByUid(int uid) {
+
+		List<ReadyPattern> patterns = readyPatternRepository.findOriginsByUid(uid);
+		List<ReadyPatternResDto> dtoList = new ArrayList<>();
+		for (ReadyPattern rp: patterns) {
+			dtoList.add(new ReadyPatternResDto(rp.getId(), rp.getName(), rp.getTime(), rp.getUser().getId(), null, null));
+		}
+		return dtoList;
+	}
+	
+	@Transactional
+	public void deletePatternById(int pid) {
+		readyPatternRepository.deleteById(pid);
 	}
 	
 	

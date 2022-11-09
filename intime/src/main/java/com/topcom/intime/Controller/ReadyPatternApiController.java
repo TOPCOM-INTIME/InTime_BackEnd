@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,32 +32,30 @@ public class ReadyPatternApiController {
 	ReadyPatternGroupService readyPatternGroupService;
 	
 	/*Pattern*/
-	@PostMapping("/api/readypattern")
-	public ResponseDto<Integer> pSave(@RequestBody ReadyPatternReqDto readyPatternReqDto) {
-		System.out.println("TAG : " + readyPatternReqDto);
+	@PostMapping("/api/userId={id}/readypattern")
+	public ResponseDto<Integer> SavePattern(@PathVariable("id")int uid, @RequestBody ReadyPatternReqDto pattern) {
 
-		readyPatternService.create(readyPatternReqDto);
+		readyPatternService.save_pattern(uid, pattern);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 	
-	@PostMapping("/api/readypatterns")//groupId path변수 빼도 될듯
-	public ResponseDto<Integer> pListSave(@RequestBody List<ReadyPatternReqDto> patternReqDtoList) {
+	@PostMapping("/api/userId={uid}/PatternsWithGroup/groupId={gid}")//groupId path변수 빼도 될듯
+	public ResponseDto<Integer> SavePatternsWithGroup(@PathVariable("uid")int uid, @PathVariable("gid")int gid, @RequestBody List<ReadyPatternReqDto> patternList) {
 		
-		System.out.println("TAG : " + patternReqDtoList);
-		readyPatternService.create2(patternReqDtoList);
+		System.out.println("TAG : " + patternList);
+		readyPatternService.save_patternList(uid, gid, patternList);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 	
-	@PutMapping("/api/readypatterns/update-groupid/{groupId}")
-	public ResponseDto<Integer> pUpdate(@PathVariable("groupId") int gid, @RequestBody List<ReadyPatternReqDto> patternReqDtoList) {
-		System.out.println("TAG : " + gid + " : " + patternReqDtoList);
+	@PutMapping("/api/userId={uid}/readypatterns/update-groupId/groupId={gid}")
+	public ResponseDto<Integer> UpdateGroupIdOfPatterns(@PathVariable("uid")int uid, @PathVariable("gid") int gid, @RequestBody List<ReadyPatternReqDto> patternList) {
 
-		readyPatternService.updateGroupId(gid, patternReqDtoList);
+		readyPatternService.UpdateGroupIdOfPatterns(uid, gid, patternList);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 	
-	@PutMapping("/api/readypattern/update-name-or-time/{readypatternId}")
-	public ResponseDto<Integer> pUpdateNameOrTimeById(@PathVariable("readypatternId") int id, @RequestBody ReadyPatternReqDto readyPatternReqDto) {
+	@PutMapping("/api/userId={uid}/readypattern/update-name-or-time/patternId={pid}")
+	public ResponseDto<Integer> pUpdateNameOrTimeById(@PathVariable("uid")int uid, @PathVariable("pid") int id, @RequestBody ReadyPatternReqDto readyPatternReqDto) {
 		readyPatternService.updateNameOrTime(id, readyPatternReqDto);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -67,37 +66,56 @@ public class ReadyPatternApiController {
 //		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 //	}
 	
-	@GetMapping("/api/user/{userId}/readypatterns")
-	public List<ReadyPatternResDto> findPatternsByUid(@PathVariable("userId") int uid) {
+	@GetMapping("/api/userId={uid}/readypatterns/all")
+	public List<ReadyPatternResDto> findAllPatternsByUid(@PathVariable("uid") int uid) {
 		
 		return readyPatternService.findAllByUid(uid);
 	}
 	
-	@GetMapping("/api/patterngroup/{groupId}/readypatterns")
-	public List<ReadyPatternResDto> findAllPatternsInGroupById(@PathVariable("groupId")int id){
+	@GetMapping("/api/userId={uid}/readypatterns/origin")
+	public List<ReadyPatternResDto> findOriginPatternsByUid(@PathVariable("uid") int uid) {
+		
+		return readyPatternService.findOriginsByUid(uid);
+	}
+	
+	@GetMapping("/api/userId={uid}/groupId={gid}/readypatterns")
+	public List<ReadyPatternResDto> findAllPatternsInGroupById(@PathVariable("uid")int uid, @PathVariable("gid")int gid){
 
-		return readyPatternGroupService.findPatternsByGid(id);
+		return readyPatternGroupService.findPatternsByGid(uid, gid);
+	}
+	
+	@DeleteMapping("/api/userId={uid}/readypattern/patternId={pid}")
+	public ResponseDto<Integer> deletePatternById(@PathVariable("uid")int uid, @PathVariable("pid")int pid) {
+		readyPatternService.deletePatternById(pid);
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 	
 	/*Group*/
-	@PostMapping("/api/patterngroup")
-	public ResponseDto<Integer> gSave(@RequestBody ReadyPatternGroupReqDto groupReqDto) {
+	@PostMapping("/api/userId={uid}/patterngroup")
+	public ResponseDto<Integer> SaveGroup(@PathVariable("uid")int uid, @RequestBody ReadyPatternGroupReqDto groupReqDto) {
 		
-		readyPatternGroupService.create(groupReqDto);
+		readyPatternGroupService.save_group(uid, groupReqDto);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 	
-	@PutMapping("api/patterngroup/{groupId}")
-	public ResponseDto<Integer> gUpdateName(@PathVariable("groupId")int id, @RequestBody ReadyPatternGroupReqDto groupReqDto) {
+	@PutMapping("/api/userId={uid}/update-group-name/groupId={gid}")
+	public ResponseDto<Integer> UpdateGroupName(@PathVariable("uid")int uid, @PathVariable("gid")int gid, @RequestBody ReadyPatternGroupReqDto groupReqDto) {
 		
-		readyPatternGroupService.updateName(id, groupReqDto);
+		readyPatternGroupService.updateGroupNameById(gid, groupReqDto);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 	
-	@GetMapping("/api/user/{userId}/patterngroups")
-	public List<ReadyPatternGroupResDto> findAllGroupsByUid (@PathVariable("userId") int uid) {
+	@GetMapping("/api/userId={uid}/groups-with-patterns/all")
+	public List<ReadyPatternGroupResDto> findAllGroupsByUid (@PathVariable("uid") int uid) {
 		
 		return readyPatternGroupService.findAllGroupsByUid(uid);
+	}
+	
+	@DeleteMapping("/api/userId={uid}/patterngroup/groupId={gid}")
+	public ResponseDto<Integer> DeleteGroupById(@PathVariable("uid")int uid, @PathVariable("gid")int gid) {
+		
+		readyPatternGroupService.deleteGroupById(gid);
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 	
 	

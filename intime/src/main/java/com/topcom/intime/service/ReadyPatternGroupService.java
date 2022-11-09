@@ -23,13 +23,13 @@ public class ReadyPatternGroupService {
 	private ReadyPatternGroupRepository readyPatternGroupRepository;
 	
 	@Transactional
-	public void create(ReadyPatternGroupReqDto groupReqDto) {
-		readyPatternGroupRepository.mSave(groupReqDto.getName(), groupReqDto.getUserId());
+	public void save_group(int uid, ReadyPatternGroupReqDto groupReqDto) {
+		readyPatternGroupRepository.mSave(groupReqDto.getName(), uid);
 
 	}
 	
 	@Transactional
-	public void updateName(int id, ReadyPatternGroupReqDto groupReqDto) {
+	public void updateGroupNameById(int id, ReadyPatternGroupReqDto groupReqDto) {
 
 		ReadyPatternGroup patternGroup = readyPatternGroupRepository.findById(id)
 				.orElseThrow(()->{
@@ -39,10 +39,10 @@ public class ReadyPatternGroupService {
 	}
 	
 	@Transactional
-	public List<ReadyPatternResDto> findPatternsByGid(int id) {
-		ReadyPatternGroup patternGroup = readyPatternGroupRepository.findById(id)
+	public List<ReadyPatternResDto> findPatternsByGid(int uid, int gid) {
+		ReadyPatternGroup patternGroup = readyPatternGroupRepository.findById(gid)
 				.orElseThrow(()->{
-					return new IllegalArgumentException("Failed to find ReadyPattenGroup by id: " + id);
+					return new IllegalArgumentException("Failed to find ReadyPattenGroup by id: " + gid);
 				});
 		List<ReadyPatternResDto> dtoLIst = new ArrayList<>();
 		for (ReadyPattern rp: patternGroup.getReadyPatterns()) {
@@ -69,6 +69,11 @@ public class ReadyPatternGroupService {
 		
 		System.out.println("TAG : " + groupDtoList);
 		return groupDtoList;
+	}
+	
+	@Transactional
+	public void deleteGroupById(int gid) {
+		readyPatternGroupRepository.deleteById(gid);
 	}
 	
 	public class pComparator implements Comparator<ReadyPatternResDto> {
