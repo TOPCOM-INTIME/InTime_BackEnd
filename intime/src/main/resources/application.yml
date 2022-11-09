@@ -31,4 +31,4 @@ spring:
       
 jwt:
   secretKey: intime123
-  expiration-milliseconds: 600000 #10분
+  expiration-milliseconds: 60000000 #10분

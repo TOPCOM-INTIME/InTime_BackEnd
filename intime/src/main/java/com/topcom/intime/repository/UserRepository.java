@@ -8,7 +8,7 @@ import com.topcom.intime.model.User;
 
 
 // @Repository 생략가능
-public interface UserRepository extends JpaRepository<User, Long>{
+public interface UserRepository extends JpaRepository<User, Integer>{
 
 	//Select * From user Where username = 1?;
     Optional<User> findByEmail(String email); //query method

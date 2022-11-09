@@ -8,11 +8,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
-import com.topcom.intime.filter.MyFilter1;
 import com.topcom.intime.jwt.JwtAuthenticationFilter;
 import com.topcom.intime.jwt.JwtAuthorizationFilter;
 import com.topcom.intime.repository.UserRepository;
