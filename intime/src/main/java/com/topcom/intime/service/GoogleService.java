@@ -36,7 +36,7 @@ public class GoogleService {
 
     public LocationDto getDatafromApi(int useridx, String address){
         if(!userRepository.existsById(useridx)){
-            throw new ResourceNotFoundException("User", "useridx", (long) useridx);
+            throw new ResourceNotFoundException("User", "useridx", useridx);
         }
         try{
             LocationDto locationDto=new LocationDto();

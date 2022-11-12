@@ -19,7 +19,7 @@ public class GoogleApiController {
         return googleService.getDatafromApi(useridx, address);
     }
 
-    @GetMapping("/google/{useridx}/redis")
+    @GetMapping("/google/{useridx}/location")
     public Object findByUserIdx(@PathVariable int useridx){
         return googleService.findByUserIdx(useridx);
     }
