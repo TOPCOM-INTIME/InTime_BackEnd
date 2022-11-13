@@ -34,11 +34,8 @@ public class TestApiController {
 
 	private UserRepository userRepository;
 
-	private final EmailService emailService;
-
 	public TestApiController(UserRepository userRepository, EmailService emailService){
 		this.userRepository=userRepository;
-		this.emailService=emailService;
 	}
 	@GetMapping("/test/{id}")
 	public void test(@PathVariable("id")int id) {

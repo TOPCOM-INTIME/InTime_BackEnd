@@ -19,12 +19,11 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class UserApiController {
 	
-	@Autowired UserService userService;
+	@Autowired private UserService userService;
 
 	@Autowired
 	private UserRepository userRepository;
 
-	private final EmailService emailService;
 
 	@PostMapping("join")
 	public ResponseDto<Integer> join(@RequestBody LoginReqDto loginReqDto) {
@@ -46,17 +45,6 @@ public class UserApiController {
 		return "admin";
 	}
 
-	@GetMapping("/email") //UserApiController로 보낼 예정
-	public ResponseEntity<String> sendEmail(@RequestParam String email){
-		try{
-			User user=userRepository.findByEmail(email).orElseThrow(()->new ResourceNotFoundException("User", "email", Long.parseLong(email)));
-			String code=user.getPassword();
-			emailService.sendMessage(email, code);
-		}catch(Exception e){
-			e.printStackTrace();
-			return new ResponseEntity<>("이메일 전송 실패", HttpStatus.BAD_REQUEST);
-		}
-		return new ResponseEntity<>("이메일 전송 성공", HttpStatus.OK);
-	}
+
 	
 }

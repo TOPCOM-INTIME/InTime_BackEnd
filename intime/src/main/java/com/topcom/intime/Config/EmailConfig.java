@@ -12,7 +12,6 @@ import java.util.Properties;
 @Configuration
 @PropertySource("classpath:email.properties")
 public class EmailConfig {
-
     @Value("${mail.smtp.port}")
     private int port;
     @Value("${mail.smtp.auth}")
@@ -25,7 +24,10 @@ public class EmailConfig {
     private String id;
     @Value("${AdminMail.password}")
     private String password;
-
+    @Value("${mail.smtp.ssl.trust}")
+    private String trust;
+    @Value("${mail.smtp.ssl.protocols}")
+    private String protocol;
     @Bean
     public JavaMailSender javaMailService() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
@@ -43,6 +45,8 @@ public class EmailConfig {
         pt.put("mail.smtp.auth", auth);
         pt.put("mail.smtp.starttls.enable", starttls);
         pt.put("mail.smtp.starttls.required", startlls_required);
+        pt.put("mail.smtp.ssl.protocols", protocol);
+        pt.put("mail.smtp.ssl.trust", trust);
         return pt;
     }
 }
