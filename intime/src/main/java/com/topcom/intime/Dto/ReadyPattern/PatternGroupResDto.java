@@ -1,18 +1,20 @@
-package com.topcom.intime.Dto;
+package com.topcom.intime.Dto.ReadyPattern;
+
+import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReadyPatternReqDto {
+public class PatternGroupResDto {
 
 	private int id;
 	private String name;
-	private int time;
-	private int userId;
-	private Integer groupId;
-	private Integer orderInGroup;
+	private List<PatternResDto> patterns;
+
 }

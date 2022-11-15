@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.topcom.intime.Dto.ReadyPatternGroupReqDto;
-import com.topcom.intime.Dto.ReadyPatternGroupResDto;
-import com.topcom.intime.Dto.ReadyPatternResDto;
+import com.topcom.intime.Dto.ReadyPattern.PatternGroupResDto;
+import com.topcom.intime.Dto.ReadyPattern.PatternResDto;
+import com.topcom.intime.Dto.ReadyPattern.SaveOnePatternGroupDto;
 import com.topcom.intime.model.ReadyPattern;
 import com.topcom.intime.model.ReadyPatternGroup;
 import com.topcom.intime.repository.ReadyPatternGroupRepository;
@@ -23,13 +23,13 @@ public class ReadyPatternGroupService {
 	private ReadyPatternGroupRepository readyPatternGroupRepository;
 	
 	@Transactional
-	public void save_group(int uid, ReadyPatternGroupReqDto groupReqDto) {
+	public void save_group(int uid, SaveOnePatternGroupDto groupReqDto) {
 		readyPatternGroupRepository.mSave(groupReqDto.getName(), uid);
 
 	}
 	
 	@Transactional
-	public void updateGroupNameById(int id, ReadyPatternGroupReqDto groupReqDto) {
+	public void updateGroupNameById(int id, SaveOnePatternGroupDto groupReqDto) {
 
 		ReadyPatternGroup patternGroup = readyPatternGroupRepository.findById(id)
 				.orElseThrow(()->{
@@ -39,32 +39,34 @@ public class ReadyPatternGroupService {
 	}
 	
 	@Transactional
-	public List<ReadyPatternResDto> findPatternsByGid(int uid, int gid) {
+	public List<PatternResDto> findPatternsByGid(int uid, int gid) {
 		ReadyPatternGroup patternGroup = readyPatternGroupRepository.findById(gid)
 				.orElseThrow(()->{
 					return new IllegalArgumentException("Failed to find ReadyPattenGroup by id: " + gid);
 				});
-		List<ReadyPatternResDto> dtoLIst = new ArrayList<>();
+		List<PatternResDto> dtoLIst = new ArrayList<>();
 		for (ReadyPattern rp: patternGroup.getReadyPatterns()) {
-			dtoLIst.add(new ReadyPatternResDto(rp.getId(), rp.getName(), rp.getTime(), rp.getUser().getId(), rp.getReadyPatternGroup().getId(), rp.getOrderInGroup()));
+			dtoLIst.add(new PatternResDto(rp.getId(), rp.getName(), rp.getTime(), rp.getUser().getId(), rp.getReadyPatternGroup().getId(), rp.getOrderInGroup()));
 		}
 //		System.out.println("TAG : " + dtoLIst);
 		return dtoLIst;
 	}
 	
 	@Transactional
-	public List<ReadyPatternGroupResDto>  findAllGroupsByUid(int uid) {
+	public List<PatternGroupResDto>  findAllGroupsByUid(int uid) {
 		
 		List<ReadyPatternGroup> groups = readyPatternGroupRepository.findAllByUid(uid);
-		List<ReadyPatternGroupResDto> groupDtoList = new ArrayList<>();
+		List<PatternGroupResDto> groupDtoList = new ArrayList<>();
+		
 		pComparator comp = new pComparator();
+		
 		for (ReadyPatternGroup group : groups) {
-			List<ReadyPatternResDto> patternDtoList = new ArrayList<>();
+			List<PatternResDto> patternDtoList = new ArrayList<>();
 			for(ReadyPattern rp : group.getReadyPatterns()) {
-				patternDtoList.add(new ReadyPatternResDto(rp.getId(), rp.getName(), rp.getTime(), rp.getUser().getId(), rp.getReadyPatternGroup().getId(), rp.getOrderInGroup()));
+				patternDtoList.add(new PatternResDto(rp.getId(), rp.getName(), rp.getTime(), rp.getUser().getId(), rp.getReadyPatternGroup().getId(), rp.getOrderInGroup()));
 			}
 			Collections.sort(patternDtoList, comp);
-			groupDtoList.add(new ReadyPatternGroupResDto(group.getId(), group.getName(), patternDtoList));
+			groupDtoList.add(new PatternGroupResDto(group.getId(), group.getName(), patternDtoList));
 		}
 		
 		System.out.println("TAG : " + groupDtoList);
@@ -76,9 +78,9 @@ public class ReadyPatternGroupService {
 		readyPatternGroupRepository.deleteById(gid);
 	}
 	
-	public class pComparator implements Comparator<ReadyPatternResDto> {
+	public class pComparator implements Comparator<PatternResDto> {
 		@Override
-		public int compare(ReadyPatternResDto o1, ReadyPatternResDto o2) {
+		public int compare(PatternResDto o1, PatternResDto o2) {
 			int firstValue = o1.getOrderInGroup();
 			int secondValue = o2.getOrderInGroup();
 			

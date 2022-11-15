@@ -1,4 +1,4 @@
-package com.topcom.intime.Dto;
+package com.topcom.intime.Dto.ReadyPattern;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ReadyPatternResDto {
+public class PatternResDto {
 
 	int id;
 	String name;
