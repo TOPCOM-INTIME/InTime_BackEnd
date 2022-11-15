@@ -1,11 +1,12 @@
 package com.topcom.intime.Controller;
 
+import com.topcom.intime.exception.ResourceNotFoundException;
+import com.topcom.intime.repository.UserRepository;
+import com.topcom.intime.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.topcom.intime.Dto.LoginReqDto;
 import com.topcom.intime.Dto.ResponseDto;
@@ -18,7 +19,11 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class UserApiController {
 	
-	@Autowired UserService userService;
+	@Autowired private UserService userService;
+
+	@Autowired
+	private UserRepository userRepository;
+
 
 	@PostMapping("join")
 	public ResponseDto<Integer> join(@RequestBody LoginReqDto loginReqDto) {
@@ -39,5 +44,7 @@ public class UserApiController {
 	public String admin() {
 		return "admin";
 	}
+
+
 	
 }
