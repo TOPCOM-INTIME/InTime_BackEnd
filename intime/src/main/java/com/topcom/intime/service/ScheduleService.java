@@ -61,10 +61,16 @@ public class ScheduleService {
 					.time(s.getTime())
 					.sourceName(s.getSourceName())
 					.destName(s.getDestName())
-					.schedulePoolId(s.getSchedulePool().getId())
 					.status(s.getStatus())
 					.build();//x,y사용여부 확인 후 생성자로 변경
 
+			if (s.getSchedulePool() == null) {
+				scheduleResDto.setSchedulePoolId(null);
+			}
+			else {
+				scheduleResDto.setSchedulePoolId(s.getSchedulePool().getId());
+			}
+			
 			scheduleResDtoList.add(scheduleResDto);
 		
 		}
