@@ -7,9 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.topcom.intime.Dto.ScheduleReqDto;
-import com.topcom.intime.Dto.ScheduleResDto;
+import com.topcom.intime.Dto.Schedule.SaveScheduleDto;
+import com.topcom.intime.Dto.Schedule.ScheduleResDto;
 import com.topcom.intime.model.Schedule;
+import com.topcom.intime.repository.SchedulePoolMembersRepository;
 import com.topcom.intime.repository.ScheduleRepository;
 
 @Service
@@ -17,13 +18,23 @@ public class ScheduleService {
 
 	@Autowired
 	private ScheduleRepository scheduleRepository;
+	@Autowired
+	private SchedulePoolMembersRepository membersRepository;
 	
 	@Transactional
-	public void save_schedule(int uid, ScheduleReqDto schedule) {
-		System.out.println("TAG2 : " + schedule);
+	public void save_schedule(int uid, SaveScheduleDto schedule, String poolId) {
 
 		scheduleRepository.mSave(schedule.getName(), schedule.getTime(), uid
-				, schedule.getSourceName(), schedule.getDestName());
+				, schedule.getSourceName(), schedule.getDestName(), poolId);
+	}
+	
+	@Transactional
+	public void save_GroupScheduleAfterInvited(int uid, SaveScheduleDto schedule, String poolId) {
+		
+		scheduleRepository.mSave(schedule.getName(), schedule.getTime(), uid
+				, schedule.getSourceName(), schedule.getDestName(), poolId);
+		membersRepository.mAddMember(poolId, uid);
+		
 	}
 	
 	@Transactional
@@ -50,7 +61,7 @@ public class ScheduleService {
 					.time(s.getTime())
 					.sourceName(s.getSourceName())
 					.destName(s.getDestName())
-					.schedulePool(s.getSchedulePool())
+					.schedulePoolId(s.getSchedulePool().getId())
 					.status(s.getStatus())
 					.build();//x,y사용여부 확인 후 생성자로 변경
 
@@ -61,7 +72,7 @@ public class ScheduleService {
 	}
 	
 	@Transactional
-	public void update_ScheduleById(int id, ScheduleReqDto scheduleDto) {
+	public void update_ScheduleById(int id, SaveScheduleDto scheduleDto) {
 		
 		Schedule s = scheduleRepository.findById(id).orElseThrow(()->{
 			return new IllegalArgumentException("Failed to find Schedule by id: " + id);

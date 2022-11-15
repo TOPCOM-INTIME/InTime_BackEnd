@@ -34,21 +34,14 @@ public class SchedulePool {
 	@Column(name = "id")
 	private String id;
 	
-//	@Id
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
-//	private int id;
-//	
-//	@Column
-//	private Integer leaderId;
-	
 	@JsonFormat(timezone = "Asia/Seoul")
 	private Timestamp time;
 	
 	@Column
-	private String destName;
+	private String name;
 	
-//	@ElementCollection(fetch = FetchType.LAZY)
-//    private List<User> members;
+	@Column
+	private String destName;
 	
 	@OneToMany(mappedBy = "schedulePool", targetEntity = Schedule.class, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"schedulePool"})

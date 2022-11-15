@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.topcom.intime.Dto.ReadyPatternReqDto;
-import com.topcom.intime.Dto.ReadyPatternResDto;
+import com.topcom.intime.Dto.ReadyPattern.PatternResDto;
+import com.topcom.intime.Dto.ReadyPattern.SaveOnePatternDto;
+import com.topcom.intime.Dto.ReadyPattern.SavePatternInGroupDto;
+import com.topcom.intime.Dto.ReadyPattern.UpdateOrderDto;
 import com.topcom.intime.model.ReadyPattern;
 import com.topcom.intime.repository.ReadyPatternRepository;
 
@@ -19,23 +21,22 @@ public class ReadyPatternService {
 	private ReadyPatternRepository readyPatternRepository;
 
 	@Transactional
-	public void save_pattern(int uid, ReadyPatternReqDto pattern) {
+	public void save_pattern(int uid, SaveOnePatternDto pattern) {
 
-		readyPatternRepository.mSave(pattern.getName(), pattern.getTime(), 
-				uid, pattern.getGroupId(), pattern.getOrderInGroup());
+		readyPatternRepository.mSave(pattern.getName(), pattern.getTime(), uid, null, null);
 
 	}
 	
 	@Transactional
-	public void save_patternList(int uid, int gid, List<ReadyPatternReqDto> patternList) {
-		for(ReadyPatternReqDto pattern : patternList) {
+	public void save_patternList(int uid, int gid, List<SavePatternInGroupDto> patternList) {
+		for(SavePatternInGroupDto pattern : patternList) {
 			readyPatternRepository.mSave(pattern.getName(), pattern.getTime(), 
 					uid, gid, pattern.getOrderInGroup());
 		}
 	}
 	
 	@Transactional
-	public void updateNameOrTime(int id, ReadyPatternReqDto readyPatternReqDto) {
+	public void updateNameOrTime(int id, SaveOnePatternDto readyPatternReqDto) {
 
 		ReadyPattern readyPattern = readyPatternRepository.findById(id)
 				.orElseThrow(()->{
@@ -52,31 +53,31 @@ public class ReadyPatternService {
 //	}
 	
 	@Transactional
-	public void UpdateGroupIdOfPatterns(int uid, int gid, List<ReadyPatternReqDto> patternList) {
+	public void UpdateGroupIdOfPatterns(int uid, int gid, List<UpdateOrderDto> patternList) {
 		
-		for (ReadyPatternReqDto pattern : patternList) {
+		for (UpdateOrderDto pattern : patternList) {
 			readyPatternRepository.mUpdateGroupIdOfPatterns(uid, pattern.getId(), pattern.getOrderInGroup(), gid);
 		}
 	}
 	
 	@Transactional
-	public List<ReadyPatternResDto> findAllByUid(int uid) {
+	public List<PatternResDto> findAllByUid(int uid) {
 
 		List<ReadyPattern> patterns = readyPatternRepository.findAllByUid(uid);
-		List<ReadyPatternResDto> dtoList = new ArrayList<>();
+		List<PatternResDto> dtoList = new ArrayList<>();
 		for (ReadyPattern rp: patterns) {
-			dtoList.add(new ReadyPatternResDto(rp.getId(), rp.getName(), rp.getTime(), rp.getUser().getId(), null, null));
+			dtoList.add(new PatternResDto(rp.getId(), rp.getName(), rp.getTime(), rp.getUser().getId(), null, null));
 		}
 		return dtoList;
 	}
 	
 	@Transactional
-	public List<ReadyPatternResDto> findOriginsByUid(int uid) {
+	public List<PatternResDto> findOriginsByUid(int uid) {
 
 		List<ReadyPattern> patterns = readyPatternRepository.findOriginsByUid(uid);
-		List<ReadyPatternResDto> dtoList = new ArrayList<>();
+		List<PatternResDto> dtoList = new ArrayList<>();
 		for (ReadyPattern rp: patterns) {
-			dtoList.add(new ReadyPatternResDto(rp.getId(), rp.getName(), rp.getTime(), rp.getUser().getId(), null, null));
+			dtoList.add(new PatternResDto(rp.getId(), rp.getName(), rp.getTime(), rp.getUser().getId(), null, null));
 		}
 		return dtoList;
 	}

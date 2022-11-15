@@ -17,11 +17,8 @@ public interface SchedulePoolRepository extends JpaRepository<SchedulePool, Inte
     long deleteById(String id);
 	
 	@Modifying
-	@Query(value="INSERT INTO SchedulePool(id,time,destName) VALUES(?1,?2,?3)", nativeQuery = true)
-	public int mSave(String id, Timestamp time, String destName);
+	@Query(value="INSERT INTO SchedulePool(id,name,time,destName) VALUES(?1,?2,?3,?4)", nativeQuery = true)
+	public int mSave(String id, String name, Timestamp time, String destName);
 
-	@Modifying
-	@Query(value="INSERT INTO SchedulePoolMembers(SchedulePoolId,userId) VALUES(?1,?2)", nativeQuery = true)
-	public int mAddMember(String pid, int uid);
 
 }

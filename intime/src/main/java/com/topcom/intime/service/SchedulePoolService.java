@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.topcom.intime.Dto.ScheduleResDto;
 import com.topcom.intime.Dto.UserResDto;
+import com.topcom.intime.Dto.Schedule.ScheduleResDto;
 import com.topcom.intime.model.Schedule;
 import com.topcom.intime.model.SchedulePool;
 import com.topcom.intime.model.SchedulePoolMembers;
@@ -26,9 +26,9 @@ public class SchedulePoolService {
 	private SchedulePoolMembersRepository membersRepository;
 	
 	@Transactional
-	public void save_pool(String poolId, Timestamp time, String destName) {
+	public void save_pool(String poolId, String name, Timestamp time, String destName) {
 
-		schedulePoolRepository.mSave(poolId, time, destName);
+		schedulePoolRepository.mSave(poolId, name, time, destName);
 	}
 	
 	@Transactional
@@ -66,7 +66,7 @@ public class SchedulePoolService {
 	@Transactional
 	public void AddMemberInSchedule(String pid, int uid) {
 		
-		schedulePoolRepository.mAddMember(pid, uid);
+		membersRepository.mAddMember(pid, uid);
 	}
 	
 	@Transactional

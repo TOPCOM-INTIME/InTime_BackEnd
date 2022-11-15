@@ -1,4 +1,4 @@
-package com.topcom.intime.Dto;
+package com.topcom.intime.Dto.ReadyPattern;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ScheduleMemberReqDto {
+public class PatternResDto {
 
-	private String schedulePoolId;
-	
+	int id;
+	String name;
+	int time;
+	int userId;
+	Integer groupId;
+	Integer orderInGroup;
 }
