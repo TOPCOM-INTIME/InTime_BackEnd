@@ -22,4 +22,13 @@ public class SaveScheduleDto {
 	
 	private String sourceName;
 	private String destName;
+	
+	@JsonFormat(timezone = "Asia/Seoul")
+	private Timestamp startTime;
+	
+	@JsonFormat(timezone = "Asia/Seoul")
+	private Timestamp readyTime;
+	
+	@JsonFormat(timezone = "Asia/Seoul")
+	private Timestamp endTime;
 }

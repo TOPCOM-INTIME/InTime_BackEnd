@@ -12,14 +12,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubPath {
+public class Lane {
 
-//	private List<SubPathDetail> subPathDetails;
-	private Integer trafficType;
-//	private Integer distance;
-	private Integer sectionTime;
-	private Integer stationCount;
-	private List<Lane> lane;
-	private String startName;
-	private String endName;
+	private String name;
+	private String BusNo;
+	
 }

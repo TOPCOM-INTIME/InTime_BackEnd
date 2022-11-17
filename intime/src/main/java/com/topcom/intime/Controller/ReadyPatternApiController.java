@@ -128,8 +128,8 @@ public class ReadyPatternApiController {
 		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
 		PrincipalDetails principal = (PrincipalDetails)principalObject;
 		
-		readyPatternGroupService.save_group(principal.getUser().getId(), groupReqDto);
-		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+		int response_id = readyPatternGroupService.save_group(principal.getUser(), groupReqDto);
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), response_id);
 	}
 	
 	@ApiOperation(value = "Update name of group.", notes = "")
