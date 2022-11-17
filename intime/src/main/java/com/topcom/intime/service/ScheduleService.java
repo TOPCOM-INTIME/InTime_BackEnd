@@ -23,16 +23,21 @@ public class ScheduleService {
 	
 	@Transactional
 	public void save_schedule(int uid, SaveScheduleDto schedule, String poolId) {
+		
+		int i = scheduleRepository.mSave(schedule.getName(), schedule.getTime(), uid
+				, schedule.getSourceName(), schedule.getDestName(), schedule.getStartTime()
+				,schedule.getReadyTime(), schedule.getEndTime(), poolId);
 
-		scheduleRepository.mSave(schedule.getName(), schedule.getTime(), uid
-				, schedule.getSourceName(), schedule.getDestName(), poolId);
+		System.out.println("TAGG : " + i);
+
 	}
 	
 	@Transactional
 	public void save_GroupScheduleAfterInvited(int uid, SaveScheduleDto schedule, String poolId) {
 		
 		scheduleRepository.mSave(schedule.getName(), schedule.getTime(), uid
-				, schedule.getSourceName(), schedule.getDestName(), poolId);
+				, schedule.getSourceName(), schedule.getDestName(), schedule.getStartTime()
+				,schedule.getReadyTime(), schedule.getEndTime(), poolId);
 		membersRepository.mAddMember(poolId, uid);
 		
 	}
