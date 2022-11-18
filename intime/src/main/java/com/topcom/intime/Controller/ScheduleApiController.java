@@ -37,6 +37,8 @@ public class ScheduleApiController {
 	@PostMapping("/api/schedule") 
 	public ResponseDto<Integer> SaveIndividualSchedule(@RequestBody SaveScheduleDto schedule) {
 		
+		System.out.println("TAGG1 : " + schedule);
+		
 		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
 		PrincipalDetails principal = (PrincipalDetails)principalObject;
 		

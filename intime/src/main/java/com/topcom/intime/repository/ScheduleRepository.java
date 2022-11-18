@@ -15,8 +15,9 @@ import com.topcom.intime.model.User;
 public interface ScheduleRepository extends JpaRepository<Schedule, Integer>{
 	
 	@Modifying
-	@Query(value="INSERT INTO Schedule(name, time, userId, sourceName, destName, schedulePoolId) VALUES(?1,?2,?3,?4,?5,?6)", nativeQuery = true)
-	public int mSave(String name, Timestamp time, int userId, String sourceName, String destName, String poolId);
+	@Query(value="INSERT INTO Schedule(name, time, userId, sourceName, destName,startTime, readyTime, endTime, schedulePoolId) VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9)", nativeQuery = true)
+	public int mSave(String name, Timestamp time, int userId, String sourceName, String destName
+			,Timestamp stime , Timestamp rTime, Timestamp eTime, String poolId);
 	
 	@Modifying
 	@Query(value = "SELECT * FROM Schedule WHERE userId = :uid", nativeQuery = true)

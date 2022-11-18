@@ -14,6 +14,7 @@ import com.topcom.intime.Dto.ReadyPattern.PatternResDto;
 import com.topcom.intime.Dto.ReadyPattern.SaveOnePatternGroupDto;
 import com.topcom.intime.model.ReadyPattern;
 import com.topcom.intime.model.ReadyPatternGroup;
+import com.topcom.intime.model.User;
 import com.topcom.intime.repository.ReadyPatternGroupRepository;
 
 @Service
@@ -23,9 +24,12 @@ public class ReadyPatternGroupService {
 	private ReadyPatternGroupRepository readyPatternGroupRepository;
 	
 	@Transactional
-	public void save_group(int uid, SaveOnePatternGroupDto groupReqDto) {
-		readyPatternGroupRepository.mSave(groupReqDto.getName(), uid);
-
+	public int save_group(User user, SaveOnePatternGroupDto groupReqDto) {
+//		readyPatternGroupRepository.mSave(groupReqDto.getName(), uid);
+		ReadyPatternGroup rpg = ReadyPatternGroup.builder().name(groupReqDto.getName()).user(user).build();
+		int saved_id = readyPatternGroupRepository.save(rpg).getId();
+		
+		return saved_id;
 	}
 	
 	@Transactional

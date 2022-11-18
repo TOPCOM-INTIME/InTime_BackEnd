@@ -22,9 +22,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -50,19 +52,7 @@ public class Schedule {
 	private String sourceName;
 	
 	@Column
-	private String sourceX;
-	
-	@Column
-	private String sourceY;
-	
-	@Column
 	private String destName;
-	
-	@Column
-	private String destX;
-	
-	@Column 
-	private String destY;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "schedulePoolId")
@@ -71,6 +61,16 @@ public class Schedule {
 	@ColumnDefault(" 'PRE' ")//pre/ing/OFF
 	private String status;
 	
-	//on/off
+	@JsonFormat(timezone = "Asia/Seoul")
+	@Column
+	private Timestamp startTime;
+	
+	@JsonFormat(timezone = "Asia/Seoul")
+	@Column
+	private Timestamp readyTime;
+	
+	@JsonFormat(timezone = "Asia/Seoul")
+	@Column
+	private Timestamp endTime;
 	
 }
