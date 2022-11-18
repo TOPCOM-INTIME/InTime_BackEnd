@@ -37,7 +37,7 @@ spring:
       fail-on-empty-beans: false
 
   redis:
-    host: localhost
+    host: redisc-dr2ie.vpc-cdb.ntruss.com
     port: 6379
 
 jwt:
