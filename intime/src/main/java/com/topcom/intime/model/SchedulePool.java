@@ -47,9 +47,9 @@ public class SchedulePool {
 	@JsonIgnoreProperties({"schedulePool"})
 	private List<Schedule> schedules;
 	
-	@OneToOne(mappedBy = "schedulePool", targetEntity = SchedulePoolMembers.class, cascade = CascadeType.REMOVE)
-	@JsonIgnoreProperties({"schedulePool"})
-	private List<SchedulePoolMembers> members;
+//	@OneToOne(mappedBy = "schedulePool", targetEntity = SchedulePoolMembers.class, cascade = CascadeType.REMOVE)
+//	@JsonIgnoreProperties({"schedulePool"})
+//	private List<SchedulePoolMembers> members;
 		
 	@ColumnDefault(" 'INVITING' ")//inviting/pre/ing
 	private String status;

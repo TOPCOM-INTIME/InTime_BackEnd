@@ -1,6 +1,7 @@
 package com.topcom.intime.Dto.Schedule;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -31,4 +32,8 @@ public class SaveScheduleDto {
 	
 	@JsonFormat(timezone = "Asia/Seoul")
 	private Timestamp endTime;
+	
+	private String status;
+	
+	private List<Integer> readyPatterns_Ids;
 }

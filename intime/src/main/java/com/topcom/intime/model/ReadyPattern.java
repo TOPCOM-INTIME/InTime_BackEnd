@@ -44,6 +44,6 @@ public class ReadyPattern {
 	@ManyToOne
 	@JoinColumn(name = "ReadyPatternGroupId")
 	private ReadyPatternGroup ReadyPatternGroup;
-
+	
 	
 }
