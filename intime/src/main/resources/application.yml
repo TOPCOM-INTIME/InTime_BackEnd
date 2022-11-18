@@ -44,7 +44,4 @@ jwt:
   secretKey: intime123
   expiration-milliseconds: 60000000 #10분
 
-#google api#
-app:
-  google-apikey: AIzaSyA7rrBCnBcsIs_niiSXqLxPmRFNKNZuLvo
 
