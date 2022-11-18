@@ -7,7 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OdsayResponseDto {
+public class OdsayGpsDto {
 
-	private Result result;
+	private String sx;
+	private String sy;
+	private String ex;
+	private String ey;
+
 }

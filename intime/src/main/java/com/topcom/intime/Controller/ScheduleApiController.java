@@ -42,7 +42,8 @@ public class ScheduleApiController {
 		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
 		PrincipalDetails principal = (PrincipalDetails)principalObject;
 		
-		scheduleService.save_schedule(principal.getUser().getId(), schedule, null);
+		scheduleService.save_schedule(principal.getUser(), schedule, null);
+
 			
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -54,8 +55,7 @@ public class ScheduleApiController {
 		PrincipalDetails principal = (PrincipalDetails)principalObject;
 		int uid = principal.getUser().getId();
 		
-		scheduleService.save_schedule(uid, schedule, null);
-		Schedule savedSchedule = scheduleService.findLatestCreatedSchedule(uid);
+		Schedule savedSchedule = scheduleService.save_schedule(principal.getUser(), schedule, null);
 		
 		String schedulePoolId = "user" + uid + "-" + savedSchedule.getId();
 
@@ -73,7 +73,8 @@ public class ScheduleApiController {
 		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
 		PrincipalDetails principal = (PrincipalDetails)principalObject;
 		
-		scheduleService.save_GroupScheduleAfterInvited(principal.getUser().getId(), scheduleDto, pid);
+		scheduleService.save_schedule(principal.getUser(), scheduleDto, pid);
+		schedulePoolService.AddMemberInSchedule(pid, principal.getUser().getId());
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 	

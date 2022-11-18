@@ -10,18 +10,26 @@ import java.net.URLEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.topcom.intime.odsay.dto.OdsayGpsDto;
 import com.topcom.intime.odsay.dto.OdsayResponseDto;
 
 @Service
 public class OdsayService {
 
-	public OdsayResponseDto requestApi() throws IOException {
+	public OdsayResponseDto requestApi(String SX, String SY, String EX, String EY) throws IOException {
 
 		// ODsay Api Key 정보
 		String apiKey = "SxaZeNIaVqLgFZIhZD72qI7y4Wrf2QRkvV5wd+SgNIk";
 		
-		String urlInfo = "https://api.odsay.com/v1/api/searchPubTransPathT?SX=127.0455&SY=37.2833&EX=126.7626&EY=37.6768&apiKey=" + URLEncoder.encode(apiKey, "UTF-8");
-
+		String urlInfo = "https://api.odsay.com/v1/api/searchPubTransPathT?"
+				+ "SX=" + SX + "&"
+				+ "SY=" + SY +"&"
+				+ "EX=" + EX + "&"
+				+ "EY=" + EY + "&"
+				+ "apiKey=" + URLEncoder.encode(apiKey, "UTF-8");
+//https://api.odsay.com/v1/api/searchPubTransPathT?lang=0&SX=127.0455&SY=37.2833&EX=126.7626&EY=37.6768&apiKey=SxaZeNIaVqLgFZIhZD72qI7y4Wrf2QRkvV5wd%2BSgNIk
+		
+		
 		// http 연결
 		URL url = new URL(urlInfo);
 		HttpURLConnection conn = (HttpURLConnection)url.openConnection();
