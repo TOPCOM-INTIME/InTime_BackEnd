@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.Random;
 
 @Service
 public class EmailService {
@@ -22,7 +23,7 @@ public class EmailService {
         message.addRecipients(MimeMessage.RecipientType.TO, to);
         message.setSubject("인타임 어플 비밀번호");
 
-        String msg="회원의 비밀번호는: "+code+"입니다.";
+        String msg="회원의 임시 비밀번호는: "+code+"입니다. 다른 비밀번호로 변경하기를 권장합니다.";
         message.setText(msg, "utf-8", "html");
         message.setFrom(new InternetAddress("intimeajou@gmail.com", "인타임"));
         return message;
@@ -38,6 +39,30 @@ public class EmailService {
             throw new IllegalArgumentException();
         }
         return code;
+    }
+
+    public String createKey(){
+        StringBuffer key= new StringBuffer();
+        Random rnd= new Random();
+
+        for(int i=0; i<8; i++){ //임시 비밀번호 8자리
+            int index=rnd.nextInt(3);
+            switch(index){
+                case 0:
+                    key.append((char)((int)(rnd.nextInt(26))+97));
+                    // a~z
+                    break;
+                case 1:
+                    key.append((char)((int)(rnd.nextInt(26))+65));
+                    //A~Z
+                    break;
+                case 2:
+                    key.append((rnd.nextInt(10)));
+                    //0~9
+                    break;
+            }
+        }
+        return key.toString();
     }
 
 }

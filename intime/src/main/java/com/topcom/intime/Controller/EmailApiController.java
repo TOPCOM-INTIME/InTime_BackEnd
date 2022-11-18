@@ -7,6 +7,7 @@ import com.topcom.intime.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,17 +20,22 @@ public class EmailApiController {
 
     private final EmailService emailService;
 
-    public EmailApiController(UserRepository userRepository, EmailService emailService){
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public EmailApiController(UserRepository userRepository, EmailService emailService, BCryptPasswordEncoder bCryptPasswordEncoder){
         this.userRepository=userRepository;
         this.emailService=emailService;
+        this.bCryptPasswordEncoder=bCryptPasswordEncoder;
     }
 
     @GetMapping("/email")
     public ResponseEntity<String> sendEmail(@RequestParam String email){
         try{
             User user=userRepository.findByEmail(email).orElseThrow(()->new ResourceNotFoundException("User", "email", Long.parseLong(email)));
-            String code=user.getPassword();
+            String code=emailService.createKey();
             emailService.sendMessage(email, code);
+            user.setPassword(bCryptPasswordEncoder.encode(code));
+            userRepository.save(user);
         }catch(Exception e){
             e.printStackTrace();
             return new ResponseEntity<>("이메일 전송 실패", HttpStatus.BAD_REQUEST);
