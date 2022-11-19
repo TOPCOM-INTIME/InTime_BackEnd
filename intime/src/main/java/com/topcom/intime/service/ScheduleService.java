@@ -63,6 +63,11 @@ public class ScheduleService {
 	}
 	
 	@Transactional
+	public void update_scheduleStatus(String status, int scheduleId) {
+		scheduleRepository.mUpdateStatus(status, scheduleId);
+	}
+	
+	@Transactional
 	public void update_schedulePoolId(int scheduleId, String poolId) {
 		
 		scheduleRepository.mUpdatePoolId(poolId, scheduleId);
@@ -78,6 +83,7 @@ public class ScheduleService {
 
 			List<SaveOnePatternDto> patternDtoList = new ArrayList<>();
 			for (Integer pid : s.getReadyPatterns_Ids()) {
+
 				ReadyPattern rp = readyPatternRepository.findById(pid)
 						.orElseThrow(()->{
 							return new IllegalArgumentException("Failed to find ReadyPattern by id: " + pid);
@@ -91,6 +97,9 @@ public class ScheduleService {
 					.destName(s.getDestName())
 					.status(s.getStatus())
 					.patterns(patternDtoList)
+					.readyTime(s.getReadyTime())
+					.startTime(s.getStartTime())
+					.endTime(s.getEndTime())
 					.build();//x,y사용여부 확인 후 생성자로 변경
 
 			if (s.getSchedulePool() == null) {

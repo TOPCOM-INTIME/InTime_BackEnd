@@ -25,4 +25,10 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer>{
 	nativeQuery = true)
 	public int mUpdatePoolId(@Param("poolId") String pid, @Param("scheduleId") int sid);
 	
+	@Modifying
+	@Query(value = "UPDATE Schedule s SET s.status = :status WHERE s.id = :scheduleId", 
+	nativeQuery = true)
+	public int mUpdateStatus(@Param("status") String status, @Param("scheduleId") int sid);
+	
+	
 }
