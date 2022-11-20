@@ -17,6 +17,7 @@ import com.topcom.intime.Dto.ResponseDto;
 import com.topcom.intime.Dto.UserResDto;
 import com.topcom.intime.Dto.Schedule.SaveScheduleDto;
 import com.topcom.intime.Dto.Schedule.ScheduleResDto;
+import com.topcom.intime.Dto.Schedule.UpdateStatusDto;
 import com.topcom.intime.auth.PrincipalDetails;
 import com.topcom.intime.model.Schedule;
 import com.topcom.intime.service.SchedulePoolService;
@@ -83,6 +84,14 @@ public class ScheduleApiController {
 	public ResponseDto<Integer> UpdateSchedule(@PathVariable("id")int id, @RequestBody SaveScheduleDto scheduleDto) {
 		
 		scheduleService.update_ScheduleById(id, scheduleDto);
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}
+	
+	@ApiOperation(value = "Update Schedule Details.")
+	@PutMapping("/api/schedule={id}/update-status")
+	public ResponseDto<Integer> UpdateSchedule(@PathVariable("id")int id, @RequestBody UpdateStatusDto statusDto) {
+		
+		scheduleService.update_scheduleStatus(statusDto.getStatus(), id);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 	
