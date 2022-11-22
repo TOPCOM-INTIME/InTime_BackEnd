@@ -2,9 +2,11 @@ package com.topcom.intime.Controller;
 
 import com.topcom.intime.Dto.LocationDto;
 import com.topcom.intime.Dto.LocationsDto;
+import com.topcom.intime.auth.PrincipalDetails;
 import com.topcom.intime.service.LocationService;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -20,21 +22,31 @@ public class LocationApiController {
     }
 
     @ApiOperation(value="Save a recent location of individual")
-    @PostMapping("/{useridx}/location")
-    public LocationDto getUserLocation(@PathVariable int useridx, @RequestBody LocationDto locationDto){
-        return locationService.post(useridx, locationDto);
+    @PostMapping("/location")
+    public LocationDto getUserLocation(@RequestBody LocationDto locationDto){
+        Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        PrincipalDetails principal = (PrincipalDetails)principalObject;
+
+        return locationService.post(principal.getUser().getId(), locationDto);
     }
 
     @ApiOperation(value="Get location information of individual user")
-    @GetMapping("/{useridx}/location")
-    public Object findByUserIdx(@PathVariable int useridx){
-        return locationService.findByUserIdx(useridx);
+    @GetMapping("/location")
+    public Object findByUserIdx() {
+        Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        PrincipalDetails principal = (PrincipalDetails)principalObject;
+
+        return locationService.findByUserIdx(principal.getUser().getId());
+
     }
 
     @ApiOperation(value="Save recent locations of individuals included in the same schedule")
-    @PostMapping("/{scheduleIdx}/{useridx}/location")
-    public LocationsDto shareLocation(@PathVariable String scheduleIdx, @PathVariable int useridx){
-        return locationService.shareLocations(scheduleIdx, useridx);
+    @PostMapping("/{scheduleIdx}/location")
+    public LocationsDto shareLocation(@PathVariable String scheduleIdx){
+        Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        PrincipalDetails principal = (PrincipalDetails)principalObject;
+
+        return locationService.shareLocations(scheduleIdx, principal.getUser().getId());
     }
 
     @ApiOperation(value="Get users' locations from the schedule")

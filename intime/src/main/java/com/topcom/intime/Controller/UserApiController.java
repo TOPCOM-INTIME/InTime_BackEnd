@@ -1,17 +1,16 @@
 package com.topcom.intime.Controller;
 
+import com.topcom.intime.Dto.*;
 import com.topcom.intime.exception.ResourceNotFoundException;
 import com.topcom.intime.repository.UserRepository;
 import com.topcom.intime.service.EmailService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import com.topcom.intime.Dto.DeviceTokenDto;
-import com.topcom.intime.Dto.JoinReqDto;
-import com.topcom.intime.Dto.ResponseDto;
 import com.topcom.intime.auth.PrincipalDetails;
 import com.topcom.intime.model.User;
 import com.topcom.intime.service.UserService;
@@ -54,6 +53,24 @@ public class UserApiController {
 		return "admin";
 	}
 
+	@ApiOperation(value="Change user's password")
+	@PutMapping("/password")
+	public ResponseEntity<String> updatePwd(@RequestBody UpdatePasswordReqDto updatePasswordReqDto){
+		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		PrincipalDetails principal = (PrincipalDetails)principalObject;
 
+		userService.updatePwd(principal.getUser().getId(), updatePasswordReqDto);
+		return new ResponseEntity<>("비밀번호 변경 성공", HttpStatus.OK);
+	}
+
+	@ApiOperation(value="Change user's name")
+	@PutMapping("/username")
+	public ResponseEntity<String> updateUsername(@RequestBody UpdateUsernameReqDto updateUsernameReqDto){
+		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		PrincipalDetails principal = (PrincipalDetails)principalObject;
+
+		userService.updateUsername(principal.getUser().getId(), updateUsernameReqDto);
+		return new ResponseEntity<>("닉네임 변경 성공", HttpStatus.OK);
+	}
 	
 }
