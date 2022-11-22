@@ -31,7 +31,6 @@ public class LocationApiController {
         return locationService.findByUserIdx(useridx);
     }
 
-    //단체 일정 Test 구간//
     @ApiOperation(value="Save recent locations of individuals included in the same schedule")
     @PostMapping("/{scheduleIdx}/{useridx}/location")
     public LocationsDto shareLocation(@PathVariable String scheduleIdx, @PathVariable int useridx){

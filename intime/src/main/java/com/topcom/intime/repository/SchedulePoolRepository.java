@@ -13,7 +13,7 @@ import com.topcom.intime.model.SchedulePool;
 public interface SchedulePoolRepository extends JpaRepository<SchedulePool, Integer>{
 	
     Optional<SchedulePool> findById(String id); //query method
-    Boolean existsById(String id);  //단체 일정 공유 테스트용//
+    Boolean existsById(String id);
     long deleteById(String id);
 	
 	@Modifying

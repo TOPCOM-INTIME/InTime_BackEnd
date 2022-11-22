@@ -63,9 +63,6 @@ public class LocationService {
                 throw new APIException(HttpStatus.BAD_REQUEST, "단체 일정에 포함되지 않은 유저입니다.");
             }
         }
-     //   if(!schedulePoolMembersRepository.findAllByschedulePoolId(scheduleIdx).contains(useridx)){
-     //       throw new APIException(HttpStatus.BAD_REQUEST, "단체 일정에 포함되지 않은 유저입니다.");
-     //  }
         SetOperations<String, Object> setOperations= redisTemplate.opsForSet();
         LocationsDto locationsDto=new LocationsDto();
         locationsDto.setUseridx(useridx);
