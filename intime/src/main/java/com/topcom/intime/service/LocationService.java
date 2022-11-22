@@ -57,12 +57,12 @@ public class LocationService {
     }
 
     public LocationsDto shareLocations(String scheduleIdx, int useridx){
-        List<SchedulePoolMembers> membersList=schedulePoolMembersRepository.findAllByschedulePoolId(scheduleIdx);
-        for(SchedulePoolMembers member:membersList){
-            if(useridx!= member.getId()){
-                throw new APIException(HttpStatus.BAD_REQUEST, "단체 일정에 포함되지 않은 유저입니다.");
-            }
-        }
+    //    List<SchedulePoolMembers> membersList=schedulePoolMembersRepository.findAllByschedulePoolId(scheduleIdx);
+    //    for(SchedulePoolMembers member:membersList){
+    //        if(useridx!= member.getUser().getId()){
+    //            throw new APIException(HttpStatus.BAD_REQUEST, "단체 일정에 포함되지 않은 유저입니다.");
+    //        }
+    //    }
         SetOperations<String, Object> setOperations= redisTemplate.opsForSet();
         LocationsDto locationsDto=new LocationsDto();
         locationsDto.setUseridx(useridx);
