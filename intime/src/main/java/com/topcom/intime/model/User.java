@@ -57,6 +57,6 @@ public class User {
 		return new ArrayList<>();
 	}
 	
-	
+	private String deviceToken;
 	
 }
