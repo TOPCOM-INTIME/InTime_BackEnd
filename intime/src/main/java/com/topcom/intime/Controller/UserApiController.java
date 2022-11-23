@@ -17,6 +17,8 @@ import com.topcom.intime.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
+import javax.validation.Valid;
+
 @RequiredArgsConstructor
 @RestController
 public class UserApiController {
@@ -24,7 +26,7 @@ public class UserApiController {
 	@Autowired private UserService userService;
 
 	@PostMapping("join")
-	public ResponseDto<Integer> join(@RequestBody JoinReqDto joinReqDto) {
+	public ResponseDto<Integer> join(@Valid @RequestBody JoinReqDto joinReqDto) {
 		if (userService.findUser(joinReqDto.getEmail()) != null) {
 			return new ResponseDto<Integer>(HttpStatus.CONFLICT.value(), -1);
 		}
