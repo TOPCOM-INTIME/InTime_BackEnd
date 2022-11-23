@@ -191,6 +191,9 @@
           <element id="library" level="project" name="Maven: com.sun.mail:jakarta.mail:1.6.7" />
           <element id="library" level="project" name="Maven: com.sun.activation:jakarta.activation:1.2.2" />
           <element id="library" level="project" name="Maven: org.json:json:20220924" />
+          <element id="library" level="project" name="Maven: org.springframework.boot:spring-boot-starter-validation:2.7.5" />
+          <element id="library" level="project" name="Maven: org.hibernate.validator:hibernate-validator:6.2.5.Final" />
+          <element id="library" level="project" name="Maven: jakarta.validation:jakarta.validation-api:2.0.2" />
         </element>
       </element>
       <element id="directory" name="META-INF">
