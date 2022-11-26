@@ -64,7 +64,7 @@ public class UserService {
 	//유저 닉네임 변경//
 	public void updateUsername(int useridx, UpdateUsernameReqDto updateUsernameReqDto){
 		User user=userRepository.findById(useridx).orElseThrow(()-> new ResourceNotFoundException("User", "id", (long)useridx));
-		if(user.getUsername().equals(updateUsernameReqDto.getUsername())){
+		if(user.getUsername()!=null&&user.getUsername().equals(updateUsernameReqDto.getUsername())){
 			throw new APIException(HttpStatus.BAD_REQUEST, "변경 전과 동일한 닉네임입니다.");
 		}
 		if(userRepository.existsByUsername(updateUsernameReqDto.getUsername())){
