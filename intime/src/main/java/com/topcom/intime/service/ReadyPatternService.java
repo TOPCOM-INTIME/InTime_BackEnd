@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.topcom.intime.Dto.ReadyPattern.PatternResDto;
 import com.topcom.intime.Dto.ReadyPattern.SaveOnePatternDto;
-import com.topcom.intime.Dto.ReadyPattern.SavePatternInGroupDto;
 import com.topcom.intime.Dto.ReadyPattern.UpdateOrderDto;
 import com.topcom.intime.model.ReadyPattern;
+import com.topcom.intime.model.Schedule;
 import com.topcom.intime.repository.ReadyPatternRepository;
 
 @Service
@@ -21,17 +21,33 @@ public class ReadyPatternService {
 	private ReadyPatternRepository readyPatternRepository;
 
 	@Transactional
-	public void save_pattern(int uid, SaveOnePatternDto pattern) {
-
-		readyPatternRepository.mSave(pattern.getName(), pattern.getTime(), uid, null, null);
-
+	public void save_pattern(int uid, SaveOnePatternDto patternDto) {
+		
+		ReadyPattern newPattern = ReadyPattern.builder()
+				.name(patternDto.getName())
+				.time(patternDto.getTime())
+				.userId(uid)
+				.build();
+		readyPatternRepository.save(newPattern);
 	}
 	
 	@Transactional
-	public void save_patternList(int uid, int gid, List<SavePatternInGroupDto> patternList) {
-		for(SavePatternInGroupDto pattern : patternList) {
-			readyPatternRepository.mSave(pattern.getName(), pattern.getTime(), 
-					uid, gid, pattern.getOrderInGroup());
+	public void save_pattern_in_schedule(List<Integer> patternIds, Schedule schedule) {
+		
+		int i =1;
+		for (int patternId : patternIds) {
+			ReadyPattern origin_pattern = readyPatternRepository.findById(patternId)
+				.orElseThrow(()->{
+					return new IllegalArgumentException("Failed to find ReadyPattern by id : " + patternId);
+				});
+			ReadyPattern cloned_pattern = ReadyPattern.builder()
+					.name(origin_pattern.getName())
+					.time(origin_pattern.getTime())
+					.schedule(schedule)
+					.orderInSchedule(i)
+					.build();
+			readyPatternRepository.save(cloned_pattern);
+			i++;
 		}
 	}
 	
@@ -46,12 +62,6 @@ public class ReadyPatternService {
 		readyPattern.setTime(readyPatternReqDto.getTime());
 	}
 	
-//	@Transactional
-//	public void getInGroup(int pid, int gid, ReadyPatternReqDto readyPatternReqDto) {
-//		
-//		readyPatternRepository.mUpdateGroupId(pid, gid);
-//	}
-	
 	@Transactional
 	public void UpdateGroupIdOfPatterns(int uid, int gid, List<UpdateOrderDto> patternList) {
 		
@@ -61,23 +71,12 @@ public class ReadyPatternService {
 	}
 	
 	@Transactional
-	public List<PatternResDto> findAllByUid(int uid) {
-
-		List<ReadyPattern> patterns = readyPatternRepository.findAllByUid(uid);
-		List<PatternResDto> dtoList = new ArrayList<>();
-		for (ReadyPattern rp: patterns) {
-			dtoList.add(new PatternResDto(rp.getId(), rp.getName(), rp.getTime(), rp.getUser().getId(), null, null));
-		}
-		return dtoList;
-	}
-	
-	@Transactional
 	public List<PatternResDto> findOriginsByUid(int uid) {
 
 		List<ReadyPattern> patterns = readyPatternRepository.findOriginsByUid(uid);
 		List<PatternResDto> dtoList = new ArrayList<>();
 		for (ReadyPattern rp: patterns) {
-			dtoList.add(new PatternResDto(rp.getId(), rp.getName(), rp.getTime(), rp.getUser().getId(), null, null));
+			dtoList.add(new PatternResDto(rp.getId(), rp.getName(), rp.getTime(), 			rp.getUserId(), rp.getIsInGroup(), rp.getOrderInSchedule()));
 		}
 		return dtoList;
 	}

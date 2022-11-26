@@ -9,6 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -17,6 +20,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@DynamicInsert
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -35,15 +39,16 @@ public class ReadyPattern {
 	private int time;
 	
 	@Column
-	private Integer orderInGroup;
+	private Integer orderInSchedule;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "userId")
-	private User user;
-
+	private Integer userId;
+	
 	@ManyToOne
-	@JoinColumn(name = "ReadyPatternGroupId")
-	private ReadyPatternGroup ReadyPatternGroup;
+	@JoinColumn(name = "scheduleId")
+	private Schedule schedule;
+	
+	@ColumnDefault(" 'false' ")
+	private String isInGroup;
 	
 	
 }

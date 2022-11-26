@@ -1,7 +1,6 @@
 package com.topcom.intime.model;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -19,6 +18,7 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.ColumnDefault;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -74,6 +74,7 @@ public class Schedule {
 	@Column
 	private Timestamp endTime;
 
-	@Convert(converter = IntegerArrayConverter.class)
-	private List<Integer> readyPatterns_Ids;
+	@OneToMany(mappedBy = "schedule", targetEntity = ReadyPattern.class, cascade = CascadeType.REMOVE)
+	@JsonIgnoreProperties({"schedule"})
+	private List<ReadyPattern> ReadyPatterns;
 }

@@ -51,7 +51,6 @@ public class SchedulePool {
 //	@JsonIgnoreProperties({"schedulePool"})
 //	private List<SchedulePoolMembers> members;
 		
-	@ColumnDefault(" 'INVITING' ")//inviting/pre/ing
 	private String status;
 	
 	

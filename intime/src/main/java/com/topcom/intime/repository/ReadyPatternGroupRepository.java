@@ -13,10 +13,6 @@ import com.topcom.intime.model.ReadyPatternGroup;
 public interface ReadyPatternGroupRepository extends JpaRepository<ReadyPatternGroup, Integer> {
 	
 	@Modifying
-	@Query(value="INSERT INTO ReadyPatternGroup (name, userId) VALUES(?1,?2)", nativeQuery = true)
-	public int mSave(String name, int userId);
-	
-	@Modifying
 	@Query(value = "SELECT * FROM ReadyPatternGroup WHERE userId = :uid", nativeQuery = true)
 	public List<ReadyPatternGroup> findAllByUid(@Param("uid")int uid);
 	

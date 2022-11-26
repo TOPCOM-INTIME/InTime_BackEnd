@@ -34,6 +34,24 @@ public class ScheduleService {
 	@Transactional
 	public Schedule save_schedule(User user, SaveScheduleDto sDto, String poolId) {
 		
+		List<Integer>patternIds = sDto.getReadyPatterns_Ids();
+		System.out.println("TAGG1 : " + sDto.getReadyPatterns_Ids());
+		List<ReadyPattern> cloned_patternList = new ArrayList<>();
+		int i =1;
+		for (int patternId : patternIds) {
+			ReadyPattern origin_pattern = readyPatternRepository.findById(patternId)
+			.orElseThrow(()->{
+				return new IllegalArgumentException("Failed to find ReadyPattern by id : " + patternId);
+			});
+			ReadyPattern cloned_pattern = ReadyPattern.builder()
+					.name(origin_pattern.getName())
+					.time(origin_pattern.getTime())
+					.orderInSchedule(i)
+					.build();
+			cloned_patternList.add(cloned_pattern);
+			i++;
+		}
+		
 		Schedule schedule = Schedule.builder()
 				.user(user)
 				.name(sDto.getName())
@@ -43,17 +61,14 @@ public class ScheduleService {
 				.startTime(sDto.getStartTime())
 				.readyTime(sDto.getReadyTime())
 				.endTime(sDto.getEndTime())
-				.readyPatterns_Ids(sDto.getReadyPatterns_Ids())
 				.status(sDto.getStatus())
 				.build();
 		
 		if (poolId != null) {
-			System.out.println("TAGG2 : " );
 			SchedulePool pool =  schedulePoolRepository.findById(poolId)
 					.orElseThrow(()->{
 						return new IllegalArgumentException("Failed to find SchedulePool by id: " + poolId);
 					});
-			System.out.println("TAGG3 : " );
 
 			schedule.setSchedulePool(pool);
 		}
@@ -82,13 +97,16 @@ public class ScheduleService {
 			//System.out.println("TAGGG1 : " + pattern_list);
 
 			List<SaveOnePatternDto> patternDtoList = new ArrayList<>();
-			for (Integer pid : s.getReadyPatterns_Ids()) {
-
-				ReadyPattern rp = readyPatternRepository.findById(pid)
-						.orElseThrow(()->{
-							return new IllegalArgumentException("Failed to find ReadyPattern by id: " + pid);
-						});
-				patternDtoList.add(new SaveOnePatternDto(rp.getName(), rp.getTime()));
+//			for (Integer pid : s.getReadyPatterns_Ids()) {
+//
+//				ReadyPattern rp = readyPatternRepository.findById(pid)
+//						.orElseThrow(()->{
+//							return new IllegalArgumentException("Failed to find ReadyPattern by id: " + pid);
+//						});
+//				patternDtoList.add(new SaveOnePatternDto(rp.getName(), rp.getTime()));
+//			}
+			for (ReadyPattern pattern : s.getReadyPatterns()) {
+				patternDtoList.add(new SaveOnePatternDto(pattern.getName(), pattern.getTime()));
 			}
 			ScheduleResDto scheduleResDto = ScheduleResDto.builder()
 					.id(s.getId()).name(s.getName())
