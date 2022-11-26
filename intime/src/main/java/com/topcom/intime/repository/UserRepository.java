@@ -1,5 +1,6 @@
 package com.topcom.intime.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +14,8 @@ public interface UserRepository extends JpaRepository<User, Integer>{
 	//Select * From user Where username = 1?;
     Optional<User> findByEmail(String email); //query method
     Boolean existsByUsername(String username);
+    List<User> findAllById(int useridx);
+    Optional<User> findByUsername(String username);
 //	public User findByEmail(String email);
 
 }

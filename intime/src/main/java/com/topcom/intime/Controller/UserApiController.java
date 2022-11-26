@@ -4,6 +4,7 @@ import com.topcom.intime.Dto.*;
 import com.topcom.intime.exception.ResourceNotFoundException;
 import com.topcom.intime.repository.UserRepository;
 import com.topcom.intime.service.EmailService;
+import com.topcom.intime.service.FriendService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,12 +19,14 @@ import com.topcom.intime.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 public class UserApiController {
 	
 	@Autowired private UserService userService;
+	@Autowired private FriendService friendService;
 
 	@PostMapping("join")
 	public ResponseDto<Integer> join(@Valid @RequestBody JoinReqDto joinReqDto) {
@@ -74,5 +77,62 @@ public class UserApiController {
 		userService.updateUsername(principal.getUser().getId(), updateUsernameReqDto);
 		return new ResponseEntity<>("닉네임 변경 성공", HttpStatus.OK);
 	}
-	
+
+	@ApiOperation(value="getting individual's friends")
+	@GetMapping("/friends")
+	public List<FriendResDto> getAllFriends(){
+		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		PrincipalDetails principal = (PrincipalDetails)principalObject;
+
+		return friendService.getAllFriends(principal.getUser().getId());
+	}
+
+	@ApiOperation(value="Deleting individual's friends")
+	@DeleteMapping("/friends")
+	public ResponseEntity<String> deleteFriends(@RequestBody DeleteFriendsReqDto deleteFriendsReqDto){
+		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		PrincipalDetails principal = (PrincipalDetails)principalObject;
+
+		friendService.deleteFriends(principal.getUser().getId(), deleteFriendsReqDto);
+		return new ResponseEntity<>("친구 목록에서 삭제되었습니다.", HttpStatus.OK);
+	}
+
+	@ApiOperation(value="requesting for being a friend")
+	@PostMapping("/friends/request")
+	public ResponseEntity<String> request(@RequestBody FriendsReqDto friendsReqDto){
+		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		PrincipalDetails principal = (PrincipalDetails)principalObject;
+
+		friendService.addFriends(principal.getUser().getId(), friendsReqDto);
+		return new ResponseEntity<>("친구 요청 성공", HttpStatus.OK);
+	}
+
+	@ApiOperation(value="accepting the request for being a friend")
+	@PutMapping("/friends/request/{friendsIdx}")
+	public ResponseEntity<String> acceptRequest(@PathVariable int friendsIdx){
+		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		PrincipalDetails principal = (PrincipalDetails)principalObject;
+
+		friendService.accept(principal.getUser().getId(), friendsIdx);
+		return new ResponseEntity<>("친구 요청 수락", HttpStatus.OK);
+	}
+
+	@ApiOperation(value="Denying the request for being a friend")
+	@DeleteMapping("/friends/request/{friendsIdx}")
+	public ResponseEntity<String> denyRequest(@PathVariable int friendsIdx){
+		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		PrincipalDetails principal = (PrincipalDetails)principalObject;
+
+		friendService.deny(principal.getUser().getId(), friendsIdx);
+		return new ResponseEntity<>("친구 요청 거절", HttpStatus.OK);
+	}
+
+	@ApiOperation(value="getting all the requests for being a friend")
+	@GetMapping("/friends/request")
+	public List<FriendsReqListDto> getAllRequests(){
+		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		PrincipalDetails principal = (PrincipalDetails)principalObject;
+
+		return friendService.getAllRequests(principal.getUser().getId());
+	}
 }
