@@ -19,6 +19,7 @@ import com.topcom.intime.Dto.Schedule.SaveScheduleDto;
 import com.topcom.intime.Dto.Schedule.ScheduleResDto;
 import com.topcom.intime.auth.PrincipalDetails;
 import com.topcom.intime.model.Schedule;
+import com.topcom.intime.service.ReadyPatternService;
 import com.topcom.intime.service.SchedulePoolService;
 import com.topcom.intime.service.ScheduleService;
 
@@ -33,6 +34,9 @@ public class ScheduleApiController {
 	@Autowired
 	SchedulePoolService schedulePoolService;
 	
+	@Autowired
+	ReadyPatternService readyPatternService;
+	
 	@ApiOperation(value = "Save a Individual Schedule")
 	@PostMapping("/api/schedule") 
 	public ResponseDto<Integer> SaveIndividualSchedule(@RequestBody SaveScheduleDto schedule) {
@@ -42,8 +46,9 @@ public class ScheduleApiController {
 		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
 		PrincipalDetails principal = (PrincipalDetails)principalObject;
 		
-		scheduleService.save_schedule(principal.getUser(), schedule, null);
-
+		Schedule saved_schedule = scheduleService.save_schedule(principal.getUser(), schedule, null);
+		
+		readyPatternService.save_pattern_in_schedule(schedule.getReadyPatterns_Ids(), saved_schedule);
 			
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}

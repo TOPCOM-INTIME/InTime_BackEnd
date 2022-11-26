@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -36,12 +37,8 @@ public class ReadyPatternGroup {
 	@Column(length = 20)
 	private String name;
 	
-	@ManyToOne //Default FetchType is EAGER
-	@JoinColumn(name = "userId")
-	private User user;
+	private int userId;
 	
-	@OneToMany(mappedBy = "ReadyPatternGroup", targetEntity = ReadyPattern.class, cascade = CascadeType.REMOVE)
-	@JsonIgnoreProperties({"ReadyPatternGroup"})
-	private List<ReadyPattern> ReadyPatterns = new ArrayList<>();
-	
+	@Convert(converter = IntegerArrayConverter.class)
+	private List<Integer> readyPatterns_Ids;
 }

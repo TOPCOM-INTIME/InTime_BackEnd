@@ -15,6 +15,6 @@ public class PatternResDto {
 	String name;
 	int time;
 	int userId;
-	Integer groupId;
-	Integer orderInGroup;
+	private String isInGroup;
+	Integer orderInSchedule;
 }

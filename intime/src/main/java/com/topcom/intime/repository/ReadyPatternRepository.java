@@ -25,7 +25,7 @@ public interface ReadyPatternRepository extends JpaRepository<ReadyPattern, Inte
 	public List<ReadyPattern> findAllByUid(@Param("uid")int uid);
 	
 	@Modifying
-	@Query(value = "SELECT * FROM ReadyPattern WHERE userId = :uid AND ReadyPatternGroupId IS NULL", nativeQuery = true)
+	@Query(value = "SELECT * FROM ReadyPattern WHERE userId = :uid AND orderInSchedule IS NULL", nativeQuery = true)
 	public List<ReadyPattern> findOriginsByUid(@Param("uid")int uid);
 	
 	//@Query("update User u set u.status = :status where u.name = :name")
