@@ -41,14 +41,12 @@ public class ScheduleApiController {
 	@ApiOperation(value = "Save a Individual Schedule")
 	@PostMapping("/api/schedule") 
 	public ResponseDto<Integer> SaveIndividualSchedule(@RequestBody SaveScheduleDto schedule) {
-		
-		System.out.println("TAGG1 : " + schedule);
-		
+				
 		Schedule saved_schedule = scheduleService.save_schedule(getPrincipal(), schedule, null);
 		
 		readyPatternService.save_pattern_in_schedule(schedule.getReadyPatterns_Ids(), saved_schedule);
 			
-		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), saved_schedule.getId());
 	}
 	
 	@ApiOperation(value = "Save a Group-Schedule", notes = "If you save a group-schedule, DB will be add Schedule, SchedulePool and SchedulePoolId automatically.")
@@ -65,7 +63,10 @@ public class ScheduleApiController {
 		schedulePoolService.save_pool(schedulePoolId, savedSchedule.getName(), savedSchedule.getTime(), savedSchedule.getDestName());
 		scheduleService.update_schedulePoolId(savedSchedule.getId(), schedulePoolId);
 		schedulePoolService.AddMemberInSchedule(schedulePoolId, uid);
-		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+		for (int memberId : schedule.getMembers_Ids()) {
+			schedulePoolService.AddMemberInSchedule(schedulePoolId, memberId);
+		}
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), savedSchedule.getId());
 
 	}
 

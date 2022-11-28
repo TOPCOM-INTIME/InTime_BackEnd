@@ -53,7 +53,12 @@ public class FirebaseCloudMessageService {
                             .body(body)
                             .image(null)
                             .build()
-                    ).build()).validateOnly(false).build();
+                    )
+                    .data(FcmMessage.Data.builder()
+                    		.type("schedule")
+                    		.build()
+                    )
+                    .build()).validateOnly(false).build();
 
         return objectMapper.writeValueAsString(fcmMessage);
     }

@@ -34,8 +34,9 @@ public class ScheduleService {
 	@Transactional
 	public Schedule save_schedule(User user, SaveScheduleDto sDto, String poolId) {
 		
+		System.out.println("TAGG1 : " + sDto.getMembers_Ids());
+		
 		List<Integer>patternIds = sDto.getReadyPatterns_Ids();
-		System.out.println("TAGG1 : " + sDto.getReadyPatterns_Ids());
 		List<ReadyPattern> cloned_patternList = new ArrayList<>();
 		int i =1;
 		for (int patternId : patternIds) {
@@ -141,6 +142,9 @@ public class ScheduleService {
 		});
 		s.setName(scheduleDto.getName());
 		s.setTime(scheduleDto.getTime());
+		s.setReadyTime(scheduleDto.getReadyTime());
+		s.setStartTime(scheduleDto.getStartTime());
+		s.setEndTime(scheduleDto.getStartTime());
 		s.setDestName(scheduleDto.getDestName());
 		s.setSourceName(scheduleDto.getSourceName());
 		s.setStatus(scheduleDto.getStatus());
