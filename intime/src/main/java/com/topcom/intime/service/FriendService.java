@@ -27,7 +27,19 @@ public class FriendService {
         this.friendsRepository=friendsRepository;
         this.userRepository=userRepository;
     }
-
+    //특정 텍스트열로 닉네임 검색 api//
+    public List<FriendsReqDto> searchFriends(int useridx, FriendsReqDto friendsReqDto){
+        List<User> users=userRepository.findAll();
+        List<FriendsReqDto> results=new ArrayList<>();
+        for(User user: users){
+            if(user.getUsername()!=null&&user.getUsername().contains(friendsReqDto.getUsername())){
+                FriendsReqDto friendsReqDto1= new FriendsReqDto();
+                friendsReqDto1.setUsername(user.getUsername());
+                results.add(friendsReqDto1);
+            }
+        }
+        return results;
+    }
     //<예정 사항> 친구 목록 가져오기, 친구 추가, 친구 요청 목록 가져오기//
     //친구 목록 가져오기(닉네임으로?)
     public List<FriendResDto> getAllFriends(int useridx){
@@ -54,9 +66,9 @@ public class FriendService {
     }
 
     //친구 요청 날리는 API(아직 수락전)//
-    public void addFriends(int useridx, FriendsReqDto friendsReqDto){
+    public void addFriends(int useridx, String username){
         User user=userRepository.findById(useridx).orElseThrow(()->new ResourceNotFoundException("User", "useridx", (long)useridx));
-        User friend=userRepository.findByUsername(friendsReqDto.getUsername()).orElseThrow(()->new APIException(HttpStatus.NOT_FOUND, "존재하지 않는 닉네임입니다."));
+        User friend=userRepository.findByUsername(username).orElseThrow(()->new APIException(HttpStatus.NOT_FOUND, "존재하지 않는 닉네임입니다."));
         if(friendsRepository.existsByFriendIdAndUserId(friend.getId(), useridx)){
             throw new APIException(HttpStatus.BAD_REQUEST, "이미 친구 요청이 된 상태입니다.");
         }
