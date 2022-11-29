@@ -39,6 +39,9 @@ public class FirebaseCloudMessageService {
     		return 0;
     	}
     	String slink = "Intime://write";
+    	//intime://pattern //test
+    	//intime://schedule
+    	//intime://friend
     	
     	String message = makeMessageForSchdule(requestDto, slink);
 
