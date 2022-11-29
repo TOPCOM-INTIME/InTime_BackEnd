@@ -35,6 +35,7 @@ public class FirebaseCloudMessageService {
     		System.out.println("T2");
     	}
     	else {
+    		System.out.println("Failed because type is not proper. : " + requestDto.getType());
     		return 0;
     	}
     	String slink = "Intime://write";
