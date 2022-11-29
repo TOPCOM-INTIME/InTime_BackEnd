@@ -78,6 +78,15 @@ public class UserApiController {
 		return new ResponseEntity<>("닉네임 변경 성공", HttpStatus.OK);
 	}
 
+	@ApiOperation(value="searching nickname by texting")
+	@PostMapping("/user")
+	public List<FriendsReqDto> searchFriends(@RequestBody FriendsReqDto friendsReqDto){
+		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		PrincipalDetails principal = (PrincipalDetails)principalObject;
+
+		return friendService.searchFriends(principal.getUser().getId(), friendsReqDto);
+	}
+
 	@ApiOperation(value="getting individual's friends")
 	@GetMapping("/friends")
 	public List<FriendResDto> getAllFriends(){
@@ -99,11 +108,11 @@ public class UserApiController {
 
 	@ApiOperation(value="requesting for being a friend")
 	@PostMapping("/friends/request")
-	public ResponseEntity<String> request(@RequestBody FriendsReqDto friendsReqDto){
+	public ResponseEntity<String> request(@RequestParam String username){
 		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		PrincipalDetails principal = (PrincipalDetails)principalObject;
 
-		friendService.addFriends(principal.getUser().getId(), friendsReqDto);
+		friendService.addFriends(principal.getUser().getId(), username);
 		return new ResponseEntity<>("친구 요청 성공", HttpStatus.OK);
 	}
 
