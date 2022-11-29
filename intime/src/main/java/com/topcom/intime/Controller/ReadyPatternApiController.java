@@ -40,9 +40,6 @@ public class ReadyPatternApiController {
 	@PostMapping("/api/readypattern")
 	public ResponseDto<Integer> SavePattern(@RequestBody SaveOnePatternDto pattern) {
 
-		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		PrincipalDetails principal = (PrincipalDetails) principalObject;
-
 		readyPatternService.save_pattern(getPrincipalId(), pattern);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
@@ -52,10 +49,7 @@ public class ReadyPatternApiController {
 	public ResponseDto<Integer> SavePatternsInGroup(@PathVariable("gid") int gid,
 			@RequestBody SavePatternInGroupDto savePatternInGroupDto) {
 
-		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		PrincipalDetails principal = (PrincipalDetails) principalObject;
-
-		readyPatternGroupService.save_patternList(principal.getUser().getId(), gid, savePatternInGroupDto.getPatterns_Ids());
+		readyPatternGroupService.save_patternList(getPrincipalId(), gid, savePatternInGroupDto.getPatterns_Ids());
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 
@@ -64,10 +58,7 @@ public class ReadyPatternApiController {
 	public ResponseDto<Integer> updateOrderOfPatterns(@PathVariable("gid") int gid,
 			@RequestBody List<UpdateOrderDto> patternList) {
 
-		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		PrincipalDetails principal = (PrincipalDetails) principalObject;
-
-		readyPatternService.UpdateGroupIdOfPatterns(principal.getUser().getId(), gid, patternList);
+		readyPatternService.UpdateGroupIdOfPatterns(getPrincipalId(), gid, patternList);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 
@@ -83,30 +74,22 @@ public class ReadyPatternApiController {
 	@GetMapping("/api/readypatterns/origin")
 	public List<PatternResDto> findOriginPatternsByUid() {
 
-		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		PrincipalDetails principal = (PrincipalDetails) principalObject;
-
-		return readyPatternService.findOriginsByUid(principal.getUser().getId());
+		return readyPatternService.findOriginsByUid(getPrincipalId());
 	}
 
 	@ApiOperation(value = "Get ready patterns in Group", notes = "")
 	@GetMapping("/api/groupId={gid}/readypatterns")
 	public List<PatternResDto> findAllPatternsInGroupById(@PathVariable("gid") int gid) {
 
-		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		PrincipalDetails principal = (PrincipalDetails) principalObject;
-
-		return readyPatternGroupService.findPatternsByGid(principal.getUser().getId(), gid);
+		return readyPatternGroupService.findPatternsByGid(getPrincipalId(), gid);
 	}
 
 	@ApiOperation(value = "Delete ready pattern", notes = "")
 	@DeleteMapping("/api/readypattern/patternId={pid}")
 	public ResponseDto<Integer> deletePatternById(@PathVariable("pid") int pid) {
-		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		PrincipalDetails principal = (PrincipalDetails) principalObject;
 
 		boolean is_contain = 
-				readyPatternGroupService.deletePatternById(principal.getUser().getId(), pid);
+				readyPatternGroupService.deletePatternById(getPrincipalId(), pid);
 		if (is_contain) {
 			return new ResponseDto<Integer>(HttpStatus.FAILED_DEPENDENCY.value(), -1);
 		} else {
@@ -119,10 +102,7 @@ public class ReadyPatternApiController {
 	@PostMapping("/api/patterngroup")
 	public ResponseDto<Integer> SaveGroup(@RequestBody SaveOnePatternGroupDto groupReqDto) {
 
-		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		PrincipalDetails principal = (PrincipalDetails) principalObject;
-
-		int response_id = readyPatternGroupService.save_group(principal.getUser().getId(), groupReqDto);
+		int response_id = readyPatternGroupService.save_group(getPrincipalId(), groupReqDto);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), response_id);
 	}
 
@@ -139,10 +119,7 @@ public class ReadyPatternApiController {
 	@GetMapping("/api/groups-with-patterns/all")
 	public List<PatternGroupResDto> findAllGroupsByUid() {
 
-		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		PrincipalDetails principal = (PrincipalDetails) principalObject;
-
-		return readyPatternGroupService.findAllGroupsByUid(principal.getUser().getId());
+		return readyPatternGroupService.findAllGroupsByUid(getPrincipalId());
 	}
 
 	@ApiOperation(value = "Delete pattern group.", notes = "If you delete pattern group, patterns in that group will be deleted as well.")

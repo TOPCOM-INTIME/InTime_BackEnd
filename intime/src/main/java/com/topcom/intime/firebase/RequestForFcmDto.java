@@ -14,5 +14,10 @@ public class RequestForFcmDto {
 	private String targetToken;
 	private String title;
 	private String body;
+	private String type;
+	private String userName;
+	private String scheduleName;
+	private String scheduleTime;
+	private String destName;
 	
 }

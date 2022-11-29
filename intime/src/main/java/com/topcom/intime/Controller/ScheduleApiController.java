@@ -19,6 +19,7 @@ import com.topcom.intime.Dto.Schedule.SaveScheduleDto;
 import com.topcom.intime.Dto.Schedule.ScheduleResDto;
 import com.topcom.intime.auth.PrincipalDetails;
 import com.topcom.intime.model.Schedule;
+import com.topcom.intime.model.User;
 import com.topcom.intime.service.ReadyPatternService;
 import com.topcom.intime.service.SchedulePoolService;
 import com.topcom.intime.service.ScheduleService;
@@ -40,34 +41,32 @@ public class ScheduleApiController {
 	@ApiOperation(value = "Save a Individual Schedule")
 	@PostMapping("/api/schedule") 
 	public ResponseDto<Integer> SaveIndividualSchedule(@RequestBody SaveScheduleDto schedule) {
-		
-		System.out.println("TAGG1 : " + schedule);
-		
-		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
-		PrincipalDetails principal = (PrincipalDetails)principalObject;
-		
-		Schedule saved_schedule = scheduleService.save_schedule(principal.getUser(), schedule, null);
+				
+		Schedule saved_schedule = scheduleService.save_schedule(getPrincipal(), schedule, null);
 		
 		readyPatternService.save_pattern_in_schedule(schedule.getReadyPatterns_Ids(), saved_schedule);
 			
-		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), saved_schedule.getId());
 	}
 	
 	@ApiOperation(value = "Save a Group-Schedule", notes = "If you save a group-schedule, DB will be add Schedule, SchedulePool and SchedulePoolId automatically.")
 	@PostMapping("/api/group-schedule")
 	public ResponseDto<Integer> SaveGroupSchedule(@RequestBody SaveScheduleDto schedule) {
-		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
-		PrincipalDetails principal = (PrincipalDetails)principalObject;
-		int uid = principal.getUser().getId();
+	
+		User request_user = getPrincipal();
+		int uid = request_user.getId();
 		
-		Schedule savedSchedule = scheduleService.save_schedule(principal.getUser(), schedule, null);
+		Schedule savedSchedule = scheduleService.save_schedule(request_user, schedule, null);
 		
 		String schedulePoolId = "user" + uid + "-" + savedSchedule.getId();
 
 		schedulePoolService.save_pool(schedulePoolId, savedSchedule.getName(), savedSchedule.getTime(), savedSchedule.getDestName());
 		scheduleService.update_schedulePoolId(savedSchedule.getId(), schedulePoolId);
 		schedulePoolService.AddMemberInSchedule(schedulePoolId, uid);
-		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+		for (int memberId : schedule.getMembers_Ids()) {
+			schedulePoolService.AddMemberInSchedule(schedulePoolId, memberId);
+		}
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), savedSchedule.getId());
 
 	}
 
@@ -75,11 +74,11 @@ public class ScheduleApiController {
 			notes = "If you accept the invitation, you make new schedule on your device. After that, it is totally acception of invitation. And DB will be updated as well.")
 	@PostMapping("/api/group-scehduel-after-invitation/schedulepool={pid}")
 	public ResponseDto<Integer> saveGroupScheduleAfterInvited(@RequestBody SaveScheduleDto scheduleDto, @PathVariable("pid")String pid) {
-		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
-		PrincipalDetails principal = (PrincipalDetails)principalObject;
 		
-		scheduleService.save_schedule(principal.getUser(), scheduleDto, pid);
-		schedulePoolService.AddMemberInSchedule(pid, principal.getUser().getId());
+		User request_user = getPrincipal();
+		
+		scheduleService.save_schedule(request_user, scheduleDto, pid);
+		schedulePoolService.AddMemberInSchedule(pid, request_user.getId());
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 	
@@ -94,19 +93,15 @@ public class ScheduleApiController {
 	@ApiOperation(value = "Get all schedules made by user.", notes = "")
 	@GetMapping("/api/user/schedule/all")
 	public List<ScheduleResDto> findSchedulesByUid() {
-		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
-		PrincipalDetails principal = (PrincipalDetails)principalObject;
 		
-		return scheduleService.findSchedulesByUid(principal.getUser().getId());
+		return scheduleService.findSchedulesByUid(getPrincipal().getId());
 	}
 	
 	@ApiOperation(value = "Not used.")
 	@GetMapping("/api/schedule2")
 	public List<Schedule> findSchedulesByUid2() {
-		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
-		PrincipalDetails principal = (PrincipalDetails)principalObject;
 		
-		return scheduleService.findSchedulesByUid2(principal.getUser().getId());
+		return scheduleService.findSchedulesByUid2(getPrincipal().getId());
 	}
 	
 	@ApiOperation(value = "Get all schedules belong to a Pool"
@@ -139,5 +134,11 @@ public class ScheduleApiController {
 		
 		schedulePoolService.delete_schedulePoolById(id);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}
+	
+	public User getPrincipal() {
+		Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		PrincipalDetails principal = (PrincipalDetails) principalObject;
+		return principal.getUser();
 	}
 }

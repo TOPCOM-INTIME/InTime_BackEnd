@@ -8,10 +8,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@DynamicInsert
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -29,4 +33,7 @@ public class SchedulePoolMembers {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "userId")
 	private User user;
+	
+	@ColumnDefault(" 'INVITING' ")//INIVITNG, OK
+	private String status;
 }
