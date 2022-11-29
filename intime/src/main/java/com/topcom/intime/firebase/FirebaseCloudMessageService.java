@@ -26,8 +26,20 @@ public class FirebaseCloudMessageService {
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/intime-fcm/messages:send";
     private final ObjectMapper objectMapper;
 
-    public void sendMessageTo(String targetToken, String title, String body) throws IOException {
-        String message = makeMessage(targetToken, title, body);
+    public int sendMessageTo(RequestForFcmDto requestDto) throws IOException {
+        
+    	if (requestDto.getType().equals("schedule")) {//schedule invitation
+    		System.out.println("T1");
+    	}
+    	else if(requestDto.getType().equals("member")) {//member invitation
+    		System.out.println("T2");
+    	}
+    	else {
+    		return 0;
+    	}
+    	String slink = "Intime://write";
+    	
+    	String message = makeMessageForSchdule(requestDto, slink);
 
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message,
@@ -42,26 +54,33 @@ public class FirebaseCloudMessageService {
         Response response = client.newCall(request).execute();
 
         System.out.println("RESPONSE : " + response.body().string());
+        
+        return 1;
     }
 
-    private String makeMessage(String targetToken, String title, String body) throws JsonParseException, JsonProcessingException {
+    private String makeMessageForSchdule(RequestForFcmDto requestDto, String slink) throws JsonParseException, JsonProcessingException {
         FcmMessage fcmMessage = FcmMessage.builder()
                 .message(FcmMessage.Message.builder()
-                    .token(targetToken)
+                    .token(requestDto.getTargetToken())
                     .notification(FcmMessage.Notification.builder()
-                            .title(title)
-                            .body(body)
+                            .title(requestDto.getTitle())
+                            .body(requestDto.getBody())
                             .image(null)
                             .build()
                     )
                     .data(FcmMessage.Data.builder()
-                    		.type("schedule")
+                    		.link("Intime://write")
+                    		.userName(requestDto.getUserName())
+                    		.scheduleName(requestDto.getScheduleName())
+                    		.scheduleTime(requestDto.getScheduleTime())
+                    		.destName(requestDto.getDestName())
                     		.build()
                     )
                     .build()).validateOnly(false).build();
 
         return objectMapper.writeValueAsString(fcmMessage);
     }
+    
 
     private String getAccessToken() throws IOException {
         String firebaseConfigPath = "firebase/firebase_service_key.json";

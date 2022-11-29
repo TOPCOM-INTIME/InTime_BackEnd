@@ -34,8 +34,12 @@ public class FcmMessage {
     @AllArgsConstructor
     @Getter
     public static class Data {
-        private String type;
+        private String link;
+        private String userName;
+    	private String scheduleName;
+    	private String scheduleTime;
+    	private String destName;
     }
+  
     
-
 }
