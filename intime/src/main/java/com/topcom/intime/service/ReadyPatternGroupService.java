@@ -28,8 +28,6 @@ public class ReadyPatternGroupService {
 	
 	@Transactional
 	public int save_group(int uid, SaveOnePatternGroupDto groupReqDto) {
-//		System.out.println("TAG : " + groupReqDto);
-		List<Integer> temp = new ArrayList<>();
 		ReadyPatternGroup rpg = ReadyPatternGroup.builder()
 				.name(groupReqDto.getName())
 				.userId(uid)
@@ -118,14 +116,16 @@ public class ReadyPatternGroupService {
 		List<ReadyPatternGroup> patternGroupList = readyPatternGroupRepository.findAllByUid(uid);
 		for (ReadyPatternGroup patternGroup : patternGroupList) {
 			List<Integer> patternIds = patternGroup.getReadyPatterns_Ids();
+
 			if (patternIds == null) {
 				continue;
 			}
 			is_contain = patternIds.contains(pid);
+			if (is_contain == true) {
+				return is_contain;
+			}
 		}
-		if (is_contain == false) {
-			readyPatternRepository.deleteById(pid);
-		}
+		readyPatternRepository.deleteById(pid);
 		return is_contain;
 	}
 	
