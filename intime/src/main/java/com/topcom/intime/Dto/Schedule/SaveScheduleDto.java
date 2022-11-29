@@ -36,4 +36,6 @@ public class SaveScheduleDto {
 	private String status;
 	
 	private List<Integer> readyPatterns_Ids;
+	
+	private List<Integer> members_Ids;
 }

@@ -17,6 +17,7 @@ public class FcmMessage {
     @Getter
     public static class Message {
         private Notification notification;
+        private Data data;
         private String token;
     }
 
@@ -28,4 +29,17 @@ public class FcmMessage {
         private String body;
         private String image;
     }
+    
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class Data {
+        private String link;
+        private String userName;
+    	private String scheduleName;
+    	private String scheduleTime;
+    	private String destName;
+    }
+  
+    
 }

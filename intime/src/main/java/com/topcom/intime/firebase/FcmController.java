@@ -3,7 +3,6 @@ package com.topcom.intime.firebase;
 import java.io.IOException;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,15 +18,14 @@ public class FcmController {
 	private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     @PostMapping("/api/fcm")
-    public ResponseDto<Integer> pushMessage(@RequestBody RequestForFcmDto requestDTO) throws IOException {
-//        System.out.println(requestDTO.getTargetToken() + " "
-//                +requestDTO.getTitle() + " " + requestDTO.getBody());
+    public ResponseDto<Integer> pushMessage(@RequestBody RequestForFcmDto requestDto) throws IOException {
 
-        firebaseCloudMessageService.sendMessageTo(
-                requestDTO.getTargetToken(),
-                requestDTO.getTitle(),
-                requestDTO.getBody());
-		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+        int is_success = firebaseCloudMessageService.sendMessageTo(requestDto);
+        
+        if (is_success == 1 ) {
+    		return new ResponseDto<Integer>(HttpStatus.OK.value(), is_success);
+        }
+		return new ResponseDto<Integer>(HttpStatus.BAD_REQUEST.value(), is_success);
     }
 
 	
