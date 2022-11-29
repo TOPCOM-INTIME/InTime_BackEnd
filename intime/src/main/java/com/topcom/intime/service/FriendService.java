@@ -72,6 +72,9 @@ public class FriendService {
         if(friendsRepository.existsByFriendIdAndUserId(friend.getId(), useridx)){
             throw new APIException(HttpStatus.BAD_REQUEST, "이미 친구 요청이 된 상태입니다.");
         }
+        if(useridx==friend.getId()){    //예외처리//
+            throw new APIException(HttpStatus.BAD_REQUEST, "본인의 계정입니다.");
+        }
         Friends friends=new Friends();
         friends.setFriendId(friend.getId());
         friends.setAccepted(false);
