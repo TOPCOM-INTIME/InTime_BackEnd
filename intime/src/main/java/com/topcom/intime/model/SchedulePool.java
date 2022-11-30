@@ -11,6 +11,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
@@ -21,27 +23,38 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Data
 @Entity
 public class SchedulePool {
 
+//	@Id
+//	@Column(name = "id")
+//	private String id;
+	
 	@Id
-	@Column(name = "id")
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
 	
-	@JsonFormat(timezone = "Asia/Seoul")
-	private Timestamp time;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "leaderId")
+	private User leader;
 	
-	@Column
-	private String name;
-	
-	@Column
-	private String destName;
+//	
+//	@JsonFormat(timezone = "Asia/Seoul")
+//	private Timestamp time;
+//	
+//	@Column
+//	private String name;
+//	
+//	@Column
+//	private String destName;
 	
 	@OneToMany(mappedBy = "schedulePool", targetEntity = Schedule.class, cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties({"schedulePool"})
@@ -51,7 +64,7 @@ public class SchedulePool {
 //	@JsonIgnoreProperties({"schedulePool"})
 //	private List<SchedulePoolMembers> members;
 		
-	private String status;
+//	private String status;
 	
 	
 }
