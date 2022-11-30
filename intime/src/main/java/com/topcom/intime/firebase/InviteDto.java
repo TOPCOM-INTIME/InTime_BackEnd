@@ -9,13 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RequestForFcmDto {
+public class InviteDto {
 
 	private String targetToken;
-	private String title;
-	private String body;
-	private String type;
-	private String userName;
 	private String scheduleName;
 	private String scheduleTime;
 	private String destName;

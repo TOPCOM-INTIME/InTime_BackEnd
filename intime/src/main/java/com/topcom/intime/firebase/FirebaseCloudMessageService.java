@@ -25,26 +25,24 @@ public class FirebaseCloudMessageService {
 
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/intime-fcm/messages:send";
     private final ObjectMapper objectMapper;
+    private final String schedule_link = "intime://schedule";
+    private final String friend_link = "intime://friend";
+    
+    
+    public int sendMessageForSchedule(InviteDto inviteDto, String uName) throws IOException {
+    	String message = makeMessageForSchdule(inviteDto, uName);
 
-    public int sendMessageTo(RequestForFcmDto requestDto) throws IOException {
-        
-    	if (requestDto.getType().equals("schedule")) {//schedule invitation
-    		System.out.println("T1");
-    	}
-    	else if(requestDto.getType().equals("member")) {//member invitation
-    		System.out.println("T2");
-    	}
-    	else {
-    		System.out.println("Failed because type is not proper. : " + requestDto.getType());
-    		return 0;
-    	}
-    	String slink = "Intime://write";
-    	//intime://pattern //test
-    	//intime://schedule
-    	//intime://friend
-    	
-    	String message = makeMessageForSchdule(requestDto, slink);
+    	return requestToFcmServer(message);
+    }
+    
+    public int sendMessageForFriend(InviteDto inviteDto, String uName) throws IOException {
+    	String message = makeMessageForFriend(inviteDto, uName);
 
+    	return requestToFcmServer(message);
+    }
+    
+    public int requestToFcmServer(String message) throws IOException {
+       
         OkHttpClient client = new OkHttpClient();
         RequestBody requestBody = RequestBody.create(message,
                 MediaType.get("application/json; charset=utf-8"));
@@ -62,22 +60,48 @@ public class FirebaseCloudMessageService {
         return 1;
     }
 
-    private String makeMessageForSchdule(RequestForFcmDto requestDto, String slink) throws JsonParseException, JsonProcessingException {
-        FcmMessage fcmMessage = FcmMessage.builder()
+    private String makeMessageForSchdule(InviteDto inviteDto, String uName) throws JsonParseException, JsonProcessingException {
+    	String title = "단체 일정 초대";
+        String body = uName + "님으로 부터 " + "[" + inviteDto.getScheduleName()
+        	+ "]" + " 일정을 초대받았습니다.";
+        
+    	FcmMessage fcmMessage = FcmMessage.builder()
                 .message(FcmMessage.Message.builder()
-                    .token(requestDto.getTargetToken())
+                    .token(inviteDto.getTargetToken())
                     .notification(FcmMessage.Notification.builder()
-                            .title(requestDto.getTitle())
-                            .body(requestDto.getBody())
+                            .title(title)
+                            .body(body)
                             .image(null)
                             .build()
                     )
                     .data(FcmMessage.Data.builder()
-                    		.link("Intime://write")
-                    		.userName(requestDto.getUserName())
-                    		.scheduleName(requestDto.getScheduleName())
-                    		.scheduleTime(requestDto.getScheduleTime())
-                    		.destName(requestDto.getDestName())
+                    		.link(friend_link)
+                    		.userName(uName)
+                    		.scheduleName(inviteDto.getScheduleName())
+                    		.scheduleTime(inviteDto.getScheduleTime())
+                    		.destName(inviteDto.getDestName())
+                    		.build()
+                    )
+                    .build()).validateOnly(false).build();
+
+        return objectMapper.writeValueAsString(fcmMessage);
+    }
+    
+    private String makeMessageForFriend(InviteDto inviteDto, String uName) throws JsonParseException, JsonProcessingException {
+    	String title = "친구 요청";
+        String body = uName + "님으로 부터 친구요청을 받았습니다.";
+    	FcmMessage fcmMessage = FcmMessage.builder()
+                .message(FcmMessage.Message.builder()
+                    .token(inviteDto.getTargetToken())
+                    .notification(FcmMessage.Notification.builder()
+                            .title(title)
+                            .body(body)
+                            .image(null)
+                            .build()
+                    )
+                    .data(FcmMessage.Data.builder()
+                    		.link(schedule_link)
+                    		.userName(uName)
                     		.build()
                     )
                     .build()).validateOnly(false).build();
