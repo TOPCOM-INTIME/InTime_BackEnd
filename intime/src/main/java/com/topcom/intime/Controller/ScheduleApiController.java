@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.topcom.intime.Dto.ResponseDto;
 import com.topcom.intime.Dto.UserResDto;
 import com.topcom.intime.Dto.Schedule.SaveScheduleDto;
+import com.topcom.intime.Dto.Schedule.ScheduleInvitationDto;
 import com.topcom.intime.Dto.Schedule.ScheduleResDto;
 import com.topcom.intime.auth.PrincipalDetails;
 import com.topcom.intime.model.Schedule;
@@ -42,7 +43,7 @@ public class ScheduleApiController {
 	@PostMapping("/api/schedule") 
 	public ResponseDto<Integer> SaveIndividualSchedule(@RequestBody SaveScheduleDto schedule) {
 				
-		Schedule saved_schedule = scheduleService.save_schedule(getPrincipal(), schedule, null);
+		Schedule saved_schedule = scheduleService.save_schedule(getPrincipal(), schedule);
 		
 		readyPatternService.save_pattern_in_schedule(schedule.getReadyPatterns_Ids(), saved_schedule);
 			
@@ -56,15 +57,15 @@ public class ScheduleApiController {
 		User request_user = getPrincipal();
 		int uid = request_user.getId();
 		
-		Schedule savedSchedule = scheduleService.save_schedule(request_user, schedule, null);
+		Schedule savedSchedule = scheduleService.save_schedule(request_user, schedule);
 		
-		String schedulePoolId = "user" + uid + "-" + savedSchedule.getId();
+//		String schedulePoolId = "user" + uid + "-" + savedSchedule.getId();
 
-		schedulePoolService.save_pool(schedulePoolId, savedSchedule.getName(), savedSchedule.getTime(), savedSchedule.getDestName());
-		scheduleService.update_schedulePoolId(savedSchedule.getId(), schedulePoolId);
-		schedulePoolService.AddMemberInSchedule(schedulePoolId, uid);
+		int savedPoolId = schedulePoolService.save_pool(savedSchedule, getPrincipal());
+		scheduleService.update_schedulePoolId(savedSchedule.getId(), savedPoolId);
+		schedulePoolService.AddMemberInSchedule(savedPoolId, uid, true);
 		for (int memberId : schedule.getMembers_Ids()) {
-			schedulePoolService.AddMemberInSchedule(schedulePoolId, memberId);
+			schedulePoolService.AddMemberInSchedule(savedPoolId, memberId, false);
 		}
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), savedSchedule.getId());
 
@@ -73,13 +74,14 @@ public class ScheduleApiController {
 	@ApiOperation(value = "Save group-schedule after accepting an invitation.", 
 			notes = "If you accept the invitation, you make new schedule on your device. After that, it is totally acception of invitation. And DB will be updated as well.")
 	@PostMapping("/api/group-scehduel-after-invitation/schedulepool={pid}")
-	public ResponseDto<Integer> saveGroupScheduleAfterInvited(@RequestBody SaveScheduleDto scheduleDto, @PathVariable("pid")String pid) {
+	public ResponseDto<Integer> saveGroupScheduleAfterInvited(@RequestBody SaveScheduleDto scheduleDto, @PathVariable("pid")int pid) {
 		
 		User request_user = getPrincipal();
 		
-		scheduleService.save_schedule(request_user, scheduleDto, pid);
-		schedulePoolService.AddMemberInSchedule(pid, request_user.getId());
-		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+		Schedule savedSchedule = scheduleService.save_schedule(request_user, scheduleDto);
+		scheduleService.update_schedulePoolId(savedSchedule.getId(), pid);
+		schedulePoolService.AcceptScheduleInvite(pid, request_user.getId());
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), savedSchedule.getId());
 	}
 	
 	@ApiOperation(value = "Update Schedule Details.", notes = "You should not put null on any parameter.")
@@ -108,7 +110,7 @@ public class ScheduleApiController {
 			, notes = "If you create group-schedule, schedulePool is created as well. SchedulePool cantains information of schedules made by each partners of schedule"
 					+ "and information of partners. It is entity as bridege connecting schedules and partners(members).")
 	@GetMapping("/api/schedulePool={pid}/schedules")
-	public List<ScheduleResDto> findSchedulesInPoolById(@PathVariable("pid")String pid) {
+	public List<ScheduleResDto> findSchedulesInPoolById(@PathVariable("pid")int pid) {
 		return schedulePoolService.findSchedulesInPoolById(pid);
 	}
 	
@@ -116,9 +118,17 @@ public class ScheduleApiController {
 			, notes = "If you create group-schedule, schedulePool is created as well. SchedulePool cantains information of schedules made by each partners of schedule"
 					+ "and information of partners. It is entity as bridege connecting schedules and partners(members).")
 	@GetMapping("/api/schedulePools={pid}/members")
-	public List<UserResDto> findMembersInSchedule(@PathVariable("pid")String pid) {
+	public List<UserResDto> findMembersInSchedule(@PathVariable("pid")int pid) {
 		return schedulePoolService.findMembersInPoolByPid(pid);
 	}
+	
+	@ApiOperation(value = "Get all Schedule Invitation"
+			, notes = "Get all Schedule Invitation which status in INVITING")
+	@GetMapping("/api/schedule-invitations")
+	public List<ScheduleInvitationDto> findScheduleInvitations() {
+		return schedulePoolService.findScheduleInvitations(getPrincipal().getId());
+	}
+	
 	
 	@ApiOperation(value = "Delete a schedule")
 	@DeleteMapping("/api/schedule/scheduleId={sid}")

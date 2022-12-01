@@ -12,11 +12,9 @@ import com.topcom.intime.Dto.Schedule.SaveScheduleDto;
 import com.topcom.intime.Dto.Schedule.ScheduleResDto;
 import com.topcom.intime.model.ReadyPattern;
 import com.topcom.intime.model.Schedule;
-import com.topcom.intime.model.SchedulePool;
 import com.topcom.intime.model.User;
 import com.topcom.intime.repository.ReadyPatternRepository;
 import com.topcom.intime.repository.SchedulePoolRepository;
-//import com.topcom.intime.repository.SchedulePoolMembersRepository;
 import com.topcom.intime.repository.ScheduleRepository;
 
 @Service
@@ -32,7 +30,7 @@ public class ScheduleService {
 	private ReadyPatternRepository readyPatternRepository;
 	
 	@Transactional
-	public Schedule save_schedule(User user, SaveScheduleDto sDto, String poolId) {
+	public Schedule save_schedule(User user, SaveScheduleDto sDto) {
 		
 		System.out.println("TAGG1 : " + sDto.getMembers_Ids());
 		
@@ -65,17 +63,7 @@ public class ScheduleService {
 				.status(sDto.getStatus())
 				.build();
 		
-		if (poolId != null) {
-			SchedulePool pool =  schedulePoolRepository.findById(poolId)
-					.orElseThrow(()->{
-						return new IllegalArgumentException("Failed to find SchedulePool by id: " + poolId);
-					});
-
-			schedule.setSchedulePool(pool);
-		}
 		return scheduleRepository.save(schedule);
-		
-
 	}
 	
 	@Transactional
@@ -84,7 +72,7 @@ public class ScheduleService {
 	}
 	
 	@Transactional
-	public void update_schedulePoolId(int scheduleId, String poolId) {
+	public void update_schedulePoolId(int scheduleId, int poolId) {
 		
 		scheduleRepository.mUpdatePoolId(poolId, scheduleId);
 	}
@@ -94,18 +82,9 @@ public class ScheduleService {
 		List<ScheduleResDto> scheduleResDtoList = new ArrayList<>();
 		
 		for (Schedule s : scheduleRepository.findAllByUid(uid)) {
-			//List<ReadyPattern> pattern_list = readyPatternRepository.findAllById(s.getReadyPatterns_Ids());
-			//System.out.println("TAGGG1 : " + pattern_list);
 
 			List<SaveOnePatternDto> patternDtoList = new ArrayList<>();
-//			for (Integer pid : s.getReadyPatterns_Ids()) {
-//
-//				ReadyPattern rp = readyPatternRepository.findById(pid)
-//						.orElseThrow(()->{
-//							return new IllegalArgumentException("Failed to find ReadyPattern by id: " + pid);
-//						});
-//				patternDtoList.add(new SaveOnePatternDto(rp.getName(), rp.getTime()));
-//			}
+
 			for (ReadyPattern pattern : s.getReadyPatterns()) {
 				patternDtoList.add(new SaveOnePatternDto(pattern.getName(), pattern.getTime()));
 			}

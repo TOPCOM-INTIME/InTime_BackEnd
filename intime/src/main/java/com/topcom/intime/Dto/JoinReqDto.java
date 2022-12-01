@@ -10,6 +10,6 @@ public class JoinReqDto {
 	@NotEmpty(message = "이메일을 꼭 입력하십시오")
 	@Email
 	private String email;
-
 	private String password;
+	private String username;
 }
