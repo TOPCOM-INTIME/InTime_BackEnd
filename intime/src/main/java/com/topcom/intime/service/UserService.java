@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.topcom.intime.Dto.JoinReqDto;
-import com.topcom.intime.Dto.ResponseDto;
 import com.topcom.intime.model.User;
 import com.topcom.intime.repository.UserRepository;
 
@@ -31,6 +30,7 @@ public class UserService {
 		User user = new User();
 		user.setEmail(joinReqDto.getEmail());
 		user.setPassword(bCryptPasswordEncoder.encode(joinReqDto.getPassword()));
+		user.setUsername(joinReqDto.getUsername());
 		user.setRoles("ROLE_USER");
 		userRepository.save(user);
 		return true;

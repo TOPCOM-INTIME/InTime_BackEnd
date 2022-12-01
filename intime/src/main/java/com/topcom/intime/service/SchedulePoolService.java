@@ -84,7 +84,7 @@ public class SchedulePoolService {
 					.invitorName(pool.getLeader().getUsername())
 					.scheduleName(pool.getSchedules().get(0).getName())
 					.destName(pool.getSchedules().get(0).getDestName())
-					.time(pool.getSchedules().get(0).getTime())
+					.endTime(pool.getSchedules().get(0).getEndTime())
 					.build()
 			);
 		}

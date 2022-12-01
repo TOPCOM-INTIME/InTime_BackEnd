@@ -20,5 +20,5 @@ public class ScheduleInvitationDto {
 	private String scheduleName;
 	private String destName;
 	@JsonFormat(timezone = "Asia/Seoul")
-	private Timestamp time;	
+	private Timestamp endTime;	
 }
