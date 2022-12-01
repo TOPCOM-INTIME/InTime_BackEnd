@@ -61,7 +61,14 @@ public class FriendService {
     @Transactional
     public void deleteFriends(int useridx, DeleteFriendsReqDto deleteFriendsReqDto){
         User friend=userRepository.findByUsername(deleteFriendsReqDto.getUsername()).orElseThrow(()->new APIException(HttpStatus.NOT_FOUND, "존재하지 않는 닉네임입니다."));
-        Friends friends=friendsRepository.findByFriendIdAndUserId(friend.getId(), useridx).orElseThrow(()->new APIException(HttpStatus.NOT_FOUND, "친구 목록에 없는 계정을 삭제할 수 없습니다."));
+        Friends friends=friendsRepository.findByFriendIdAndUserId(friend.getId(), useridx).orElseThrow(()->new APIException(HttpStatus.NOT_FOUND, "친구 목록에 없는 계정을 삭제할 수 없습니다.")); //3, 1삭제
+        List<Friends> friendsList=friendsRepository.findAllByFriendId(useridx); //1, 3삭제
+        for(Friends friends1: friendsList){
+            if(friend.getId()==friends1.getUser().getId()&&friends1.isAccepted()){
+                friendsRepository.delete(friends1);
+            }
+        }
+
         friendsRepository.delete(friends);
     }
 
@@ -80,6 +87,7 @@ public class FriendService {
         friends.setAccepted(false);
         friends.setUser(user);
         friendsRepository.save(friends);
+
     }
     //친구 요청 수락 API//
     @Transactional
