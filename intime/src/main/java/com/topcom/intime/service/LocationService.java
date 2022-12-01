@@ -5,6 +5,7 @@ import com.topcom.intime.Dto.LocationsDto;
 import com.topcom.intime.exception.APIException;
 import com.topcom.intime.exception.ResourceNotFoundException;
 import com.topcom.intime.model.SchedulePoolMembers;
+import com.topcom.intime.model.User;
 import com.topcom.intime.repository.SchedulePoolMembersRepository;
 import com.topcom.intime.repository.SchedulePoolRepository;
 import com.topcom.intime.repository.UserRepository;
@@ -56,28 +57,32 @@ public class LocationService {
         return (LocationDto) redisTemplate.opsForValue().get(key);
     }
 
-    public LocationsDto shareLocations(String scheduleIdx, int useridx){
+    public LocationsDto shareLocations(int scheduleIdx, int useridx){
     //    List<SchedulePoolMembers> membersList=schedulePoolMembersRepository.findAllByschedulePoolId(scheduleIdx);
     //    for(SchedulePoolMembers member:membersList){
     //        if(useridx!= member.getUser().getId()){
     //            throw new APIException(HttpStatus.BAD_REQUEST, "단체 일정에 포함되지 않은 유저입니다.");
     //        }
     //    }
+        String strKey=KeyGen.StrKeyGenerated(scheduleIdx);
+        User user=userRepository.findById(useridx).orElseThrow(()->new ResourceNotFoundException("User", "useridx", (long)useridx));
         SetOperations<String, Object> setOperations= redisTemplate.opsForSet();
         LocationsDto locationsDto=new LocationsDto();
         locationsDto.setUseridx(useridx);
+        locationsDto.setUsername(user.getUsername());
         locationsDto.setGps_x(this.findByUserIdx(useridx).getGps_x());
         locationsDto.setGps_y(this.findByUserIdx(useridx).getGps_y());
-        setOperations.add(scheduleIdx, locationsDto);
-        redisTemplate.expire(scheduleIdx, 1, TimeUnit.MINUTES);
+        setOperations.add(strKey, locationsDto);
+        redisTemplate.expire(strKey, 1, TimeUnit.MINUTES);
         return locationsDto;
     }
 
-    public Set getUsersLocations(String scheduleIdx){
+    public Set getUsersLocations(int scheduleIdx){
+        String strKey=KeyGen.StrKeyGenerated(scheduleIdx);
         if(!schedulePoolRepository.existsById(scheduleIdx)){
-            throw new ResourceNotFoundException("Schedule", scheduleIdx, Long.parseLong(scheduleIdx));
+            throw new ResourceNotFoundException("Schedule", "scheduleIdx", (long)scheduleIdx);
         }
-        return redisTemplate.opsForSet().members(scheduleIdx);
+        return redisTemplate.opsForSet().members(strKey);
     }
 }
 
