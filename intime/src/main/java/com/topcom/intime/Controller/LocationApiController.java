@@ -42,7 +42,7 @@ public class LocationApiController {
 
     @ApiOperation(value="Save recent locations of individuals included in the same schedule")
     @PostMapping("/{scheduleIdx}/location")
-    public LocationsDto shareLocation(@PathVariable String scheduleIdx){
+    public LocationsDto shareLocation(@PathVariable int scheduleIdx){
         Object principalObject = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         PrincipalDetails principal = (PrincipalDetails)principalObject;
 
@@ -51,7 +51,7 @@ public class LocationApiController {
 
     @ApiOperation(value="Get users' locations from the schedule")
     @GetMapping("/{scheduleIdx}/locations")
-    public Set<Object> getUsersLocation(@PathVariable String scheduleIdx){
+    public Set<Object> getUsersLocation(@PathVariable int scheduleIdx){
         return locationService.getUsersLocations(scheduleIdx);
     }
 }
