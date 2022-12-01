@@ -1,6 +1,5 @@
 package com.topcom.intime.repository;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,7 +22,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer>{
 	@Modifying
 	@Query(value = "UPDATE Schedule s SET s.SchedulePoolId = :poolId WHERE s.id = :scheduleId", 
 	nativeQuery = true)
-	public int mUpdatePoolId(@Param("poolId") String pid, @Param("scheduleId") int sid);
+	public int mUpdatePoolId(@Param("poolId") int pid, @Param("scheduleId") int sid);
 	
 	@Modifying
 	@Query(value = "UPDATE Schedule s SET s.status = :status WHERE s.id = :scheduleId", 

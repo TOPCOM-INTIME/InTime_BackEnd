@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class FriendService {
@@ -44,18 +43,20 @@ public class FriendService {
     //친구 목록 가져오기(닉네임으로?)
     public List<FriendResDto> getAllFriends(int useridx){
         List<Friends> friends=friendsRepository.findAllByUserId(useridx);
-        List<FriendResDto> names=new ArrayList<>();
+        List<FriendResDto> friendResDtoList=new ArrayList<>();
         for(Friends friend: friends){
             List<User> users=userRepository.findAllById(friend.getFriendId());
             for(User user: users){
                 if(friend.isAccepted()){
                     FriendResDto friendResDto= new FriendResDto();
+                    friendResDto.setId(user.getId());
                     friendResDto.setUsername(user.getUsername());
-                    names.add(friendResDto);
+                    friendResDto.setDeviceToken(user.getDeviceToken());
+                    friendResDtoList.add(friendResDto);
                 }
             }
         }
-        return names;
+        return friendResDtoList;
     }
     //친구 삭제 API//
     @Transactional

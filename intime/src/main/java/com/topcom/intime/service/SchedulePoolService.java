@@ -1,6 +1,5 @@
 package com.topcom.intime.service;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,10 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.topcom.intime.Dto.UserResDto;
+import com.topcom.intime.Dto.Schedule.ScheduleInvitationDto;
 import com.topcom.intime.Dto.Schedule.ScheduleResDto;
 import com.topcom.intime.model.Schedule;
 import com.topcom.intime.model.SchedulePool;
 import com.topcom.intime.model.SchedulePoolMembers;
+import com.topcom.intime.model.User;
 import com.topcom.intime.repository.SchedulePoolMembersRepository;
 import com.topcom.intime.repository.SchedulePoolRepository;
 
@@ -26,17 +27,23 @@ public class SchedulePoolService {
 	private SchedulePoolMembersRepository membersRepository;
 	
 	@Transactional
-	public void save_pool(String poolId, String name, Timestamp time, String destName) {
-
-		schedulePoolRepository.mSave(poolId, name, time, destName);
+	public int save_pool(Schedule schedule, User user) {
+		List<Schedule> scheduleList = new ArrayList<>();
+		scheduleList.add(schedule);
+		
+		SchedulePool schedulePool = SchedulePool.builder()
+				.schedules(scheduleList)
+				.leader(user)
+				.build();
+		return schedulePoolRepository.save(schedulePool).getId();
 	}
 	
 	@Transactional
-	public List<ScheduleResDto> findSchedulesInPoolById(String id) {
+	public List<ScheduleResDto> findSchedulesInPoolById(int pid) {
 
-		SchedulePool schedulePool = schedulePoolRepository.findById(id)
+		SchedulePool schedulePool = schedulePoolRepository.findById(pid)
 				.orElseThrow(()->{
-					return new IllegalArgumentException("Failed to find SchedulePool by id: " + id);
+					return new IllegalArgumentException("Failed to find SchedulePool by id: " + pid);
 				});
 		List<ScheduleResDto> dtoList = new ArrayList<>();
 		for (Schedule s : schedulePool.getSchedules()) {
@@ -53,7 +60,7 @@ public class SchedulePoolService {
 	}
 	
 	@Transactional
-	public List<UserResDto> findMembersInPoolByPid(String pid) {
+	public List<UserResDto> findMembersInPoolByPid(int pid) {
 		List<SchedulePoolMembers> schedulePoolMembersList =  membersRepository.findAllByschedulePoolId(pid);
 		List<UserResDto> userDtoList = new ArrayList<>();
 		for (SchedulePoolMembers member : schedulePoolMembersList) {
@@ -64,9 +71,41 @@ public class SchedulePoolService {
 	}
 	
 	@Transactional
-	public void AddMemberInSchedule(String pid, int uid) {
+	public List<ScheduleInvitationDto> findScheduleInvitations(int uid) {
+		List<Integer> poolIds = membersRepository.mFindSchedulePoolInvited("INVITING", uid);
+		System.out.println("TAGGGGG : " + poolIds);
+		List<SchedulePool> pool_List = schedulePoolRepository.findAllById(poolIds);
+		System.out.println("TAGGGGG2222 : " + pool_List);
+		List<ScheduleInvitationDto> invitationDtoList = new ArrayList<>();
+		for (SchedulePool pool : pool_List) {
+			invitationDtoList.add(
+					ScheduleInvitationDto.builder()
+					.schedulePoolId(pool.getId())
+					.invitorName(pool.getLeader().getUsername())
+					.scheduleName(pool.getSchedules().get(0).getName())
+					.destName(pool.getSchedules().get(0).getDestName())
+					.endTime(pool.getSchedules().get(0).getEndTime())
+					.build()
+			);
+		}
+		return invitationDtoList;
+	}
+	
+	@Transactional
+	public void AddMemberInSchedule(int pid, int uid, boolean is_leader) {
 		
-		membersRepository.mAddMember(pid, uid);
+		if (is_leader == true) {
+			membersRepository.mAddLeader(pid, uid, "LEADER");
+		}
+		else {
+			membersRepository.mAddMember(pid, uid);
+		}
+	}
+	
+	@Transactional
+	public void AcceptScheduleInvite(int pid, int uid) {
+		String status = "OK";
+		membersRepository.mUpdateStatus(status, uid, pid);
 	}
 	
 	@Transactional
