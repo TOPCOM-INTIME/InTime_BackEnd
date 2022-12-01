@@ -51,6 +51,7 @@ public class FriendService {
                     FriendResDto friendResDto= new FriendResDto();
                     friendResDto.setId(user.getId());
                     friendResDto.setUsername(user.getUsername());
+                    friendResDto.setDeviceToken(user.getDeviceToken());
                     friendResDtoList.add(friendResDto);
                 }
             }

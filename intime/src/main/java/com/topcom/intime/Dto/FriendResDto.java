@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class FriendResDto {
 	private int id;
     private String username;
+    private String deviceToken;
 }
