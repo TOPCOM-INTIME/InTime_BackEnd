@@ -45,9 +45,8 @@ public class Schedule {
 	@Column
 	private String name;
 	
-	@JsonFormat(timezone = "Asia/Seoul")
 	@Column
-	private Timestamp time;
+	private int time;
 	
 	@Column
 	private String sourceName;

@@ -21,8 +21,7 @@ public class ScheduleResDto {
 
 	private int id;
 	private String name;
-	@JsonFormat(timezone = "Asia/Seoul")
-	private Timestamp time;
+	private int time;
 	private String sourceName;
 	private String destName;
 	private Integer schedulePoolId;
