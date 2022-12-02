@@ -3,6 +3,7 @@ package com.topcom.intime.firebase;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.topcom.intime.model.User;
+import com.topcom.intime.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import okhttp3.MediaType;
@@ -22,11 +25,13 @@ import okhttp3.Response;
 @RequiredArgsConstructor
 public class FirebaseCloudMessageService {
 
+	@Autowired
+	private UserRepository userRepository;
 
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/intime-fcm/messages:send";
     private final ObjectMapper objectMapper;
     private final String schedule_link = "intime://schedule";
-    private final String friend_link = "intime://friend";
+    private final String friend_link = "intime://community";
     
     
     public int sendMessageForSchedule(InviteDto inviteDto, String uName) throws IOException {
@@ -60,14 +65,20 @@ public class FirebaseCloudMessageService {
         return 1;
     }
 
-    private String makeMessageForSchdule(InviteDto inviteDto, String uName) throws JsonParseException, JsonProcessingException {
+    private String makeMessageForSchdule(InviteDto inviteDto, String senderName) throws JsonParseException, JsonProcessingException {
     	String title = "단체 일정 초대";
-        String body = uName + "님으로 부터 " + "[" + inviteDto.getScheduleName()
-        	+ "]" + " 일정을 초대받았습니다.";
+        String body = senderName + "님으로 부터 " + " 일정을 초대받았습니다.";
+        
+        String recieverName = inviteDto.getUserName();
+        User reciever = userRepository.findByUsername(recieverName)
+        		.orElseThrow(()->{
+        			return new IllegalArgumentException("Failed to find User by username: " + recieverName);
+        		});
+        String deviceToken = reciever.getDeviceToken();
         
     	FcmMessage fcmMessage = FcmMessage.builder()
                 .message(FcmMessage.Message.builder()
-                    .token(inviteDto.getTargetToken())
+                    .token(deviceToken)
                     .notification(FcmMessage.Notification.builder()
                             .title(title)
                             .body(body)
@@ -76,7 +87,7 @@ public class FirebaseCloudMessageService {
                     )
                     .data(FcmMessage.Data.builder()
                     		.link(friend_link)
-                    		.userName(uName)
+                    		.userName(senderName)
                     		.scheduleName(inviteDto.getScheduleName())
                     		.scheduleTime(inviteDto.getScheduleTime())
                     		.destName(inviteDto.getDestName())
