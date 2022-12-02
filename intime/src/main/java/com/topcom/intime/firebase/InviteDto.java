@@ -15,5 +15,5 @@ public class InviteDto {
 	private String scheduleName;
 	private String scheduleTime;
 	private String destName;
-	
+	private String userName;
 }
