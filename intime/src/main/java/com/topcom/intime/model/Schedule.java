@@ -46,7 +46,7 @@ public class Schedule {
 	private String name;
 	
 	@Column
-	private int time;
+	private Integer time;
 	
 	@Column
 	private String sourceName;

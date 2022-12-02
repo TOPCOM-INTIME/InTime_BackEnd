@@ -21,7 +21,7 @@ public class ScheduleResDto {
 
 	private int id;
 	private String name;
-	private int time;
+	private Integer time;
 	private String sourceName;
 	private String destName;
 	private Integer schedulePoolId;
