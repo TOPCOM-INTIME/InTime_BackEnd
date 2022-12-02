@@ -18,8 +18,7 @@ public class SaveScheduleDto {
 
 	private String name;
 	
-	@JsonFormat(timezone = "Asia/Seoul")
-	private Timestamp time;
+	private int time;
 	
 	private String sourceName;
 	private String destName;
