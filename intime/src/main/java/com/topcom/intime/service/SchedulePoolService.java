@@ -92,6 +92,19 @@ public class SchedulePoolService {
 	}
 	
 	@Transactional
+	public List<UserResDto> findJoinedMembersByPoolId(int pid) {
+		List<SchedulePoolMembers> schedulePoolMembersList =  membersRepository.findAllByschedulePoolId(pid);
+		List<UserResDto> userDtoList = new ArrayList<>();
+		for (SchedulePoolMembers member : schedulePoolMembersList) {
+			if (member.getStatus().equals("LEADER") || member.getStatus().equals("OK")) {
+				UserResDto userDto = new UserResDto(member.getUser().getId(), member.getUser().getUsername(), member.getUser().getEmail());
+				userDtoList.add(userDto);
+			}
+		}
+		return userDtoList;
+	}
+	
+	@Transactional
 	public void AddMemberInSchedule(int pid, int uid, boolean is_leader) {
 		
 		if (is_leader == true) {

@@ -31,4 +31,5 @@ public interface SchedulePoolMembersRepository extends JpaRepository<SchedulePoo
 	@Query(value="SELECT SchedulePoolId FROM SchedulePoolMembers m "
 			+ "WHERE m.status = ?1 AND m.userId = ?2", nativeQuery = true)
 	public List<Integer> mFindSchedulePoolInvited(String status, int uid);
+
 }
