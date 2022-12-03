@@ -122,6 +122,12 @@ public class ScheduleApiController {
 		return schedulePoolService.findMembersInPoolByPid(pid);
 	}
 	
+	@ApiOperation(value = "Get all joined members belong to a Pool", notes = "")
+	@GetMapping("/api/schedulePools={pid}/joined-members")
+	public List<UserResDto> findJoinedMembersInSchedule(@PathVariable("pid")int pid) {
+		return schedulePoolService.findJoinedMembersByPoolId(pid);
+	}
+	
 	@ApiOperation(value = "Get all Schedule Invitation"
 			, notes = "Get all Schedule Invitation which status in INVITING")
 	@GetMapping("/api/schedule-invitations")
