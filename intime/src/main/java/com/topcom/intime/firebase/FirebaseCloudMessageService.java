@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,7 +30,7 @@ public class FirebaseCloudMessageService {
 
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/intime-fcm/messages:send";
     private final ObjectMapper objectMapper;
-    private final String schedule_link = "intime://schedule";
+    private final String schedule_link = "intime://invitation";
     private final String friend_link = "intime://community";
     
     
@@ -70,16 +69,9 @@ public class FirebaseCloudMessageService {
     	String title = "단체 일정 초대";
         String body = senderName + "님으로 부터 " + " 일정을 초대받았습니다.";
         
-        String recieverName = inviteDto.getUserName();
-        User reciever = userRepository.findByUsername(recieverName)
-        		.orElseThrow(()->{
-        			return new IllegalArgumentException("Failed to find User by username: " + recieverName);
-        		});
-        String deviceToken = reciever.getDeviceToken();
-        
     	FcmMessage fcmMessage = FcmMessage.builder()
                 .message(FcmMessage.Message.builder()
-                    .token(deviceToken)
+                    .token(getRecieverDeviceToken(inviteDto.getTargetToken()))
                     .notification(FcmMessage.Notification.builder()
                             .title(title)
                             .body(body)
