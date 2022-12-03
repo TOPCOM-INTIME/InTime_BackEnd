@@ -71,7 +71,7 @@ public class FirebaseCloudMessageService {
         
     	FcmMessage fcmMessage = FcmMessage.builder()
                 .message(FcmMessage.Message.builder()
-                    .token(getRecieverDeviceToken(inviteDto.getTargetToken()))
+                    .token(getRecieverDeviceToken(inviteDto.getUserName()))
                     .notification(FcmMessage.Notification.builder()
                             .title(title)
                             .body(body)
