@@ -12,6 +12,7 @@ import com.topcom.intime.model.SchedulePoolMembers;
 public interface SchedulePoolMembersRepository extends JpaRepository<SchedulePoolMembers, Integer>{
     
    List<SchedulePoolMembers> findAllByschedulePoolId(int poolId);
+   int deleteByschedulePoolId(int pid);
 
    @Modifying
 	@Query(value="INSERT INTO SchedulePoolMembers(SchedulePoolId,userId, status) VALUES(?1,?2,?3)", nativeQuery = true)

@@ -122,8 +122,8 @@ public class SchedulePoolService {
 	}
 	
 	@Transactional
-	public void delete_schedulePoolById(String id) {
-		
+	public void delete_schedulePoolById(int id) {
+		membersRepository.deleteByschedulePoolId(id);
 		schedulePoolRepository.deleteById(id);
 	}
 	

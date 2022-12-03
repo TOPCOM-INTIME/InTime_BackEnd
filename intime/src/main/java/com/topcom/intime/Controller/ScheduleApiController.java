@@ -146,7 +146,7 @@ public class ScheduleApiController {
 	
 	@ApiOperation(value = "Delete a schedulePool")
 	@DeleteMapping("/api/schedulePool={id}")
-	public ResponseDto<Integer> DeleteSchedulePoolById(@PathVariable("id") String id) {
+	public ResponseDto<Integer> DeleteSchedulePoolById(@PathVariable("id") int id) {
 		
 		schedulePoolService.delete_schedulePoolById(id);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
