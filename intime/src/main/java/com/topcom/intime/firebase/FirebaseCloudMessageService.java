@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -86,7 +87,7 @@ public class FirebaseCloudMessageService {
                             .build()
                     )
                     .data(FcmMessage.Data.builder()
-                    		.link(friend_link)
+                    		.link(schedule_link)
                     		.userName(senderName)
                     		.scheduleName(inviteDto.getScheduleName())
                     		.scheduleTime(inviteDto.getScheduleTime())
@@ -103,7 +104,7 @@ public class FirebaseCloudMessageService {
         String body = uName + "님으로 부터 친구요청을 받았습니다.";
     	FcmMessage fcmMessage = FcmMessage.builder()
                 .message(FcmMessage.Message.builder()
-                    .token(inviteDto.getTargetToken())
+                    .token(getRecieverDeviceToken(inviteDto.getUserName()))
                     .notification(FcmMessage.Notification.builder()
                             .title(title)
                             .body(body)
@@ -111,7 +112,7 @@ public class FirebaseCloudMessageService {
                             .build()
                     )
                     .data(FcmMessage.Data.builder()
-                    		.link(schedule_link)
+                    		.link(friend_link)
                     		.userName(uName)
                     		.build()
                     )
@@ -132,4 +133,11 @@ public class FirebaseCloudMessageService {
         return googleCredentials.getAccessToken().getTokenValue();
     }
 	
+    private String getRecieverDeviceToken(String recieverUsername) {
+        User reciever = userRepository.findByUsername(recieverUsername)
+        		.orElseThrow(()->{
+        			return new IllegalArgumentException("Failed to find User by username: " + recieverUsername);
+        		});
+        return reciever.getDeviceToken();
+    }
 }

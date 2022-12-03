@@ -10,7 +10,6 @@ import java.net.URLEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.topcom.intime.odsay.dto.OdsayGpsDto;
 import com.topcom.intime.odsay.dto.OdsayResponseDto;
 
 @Service

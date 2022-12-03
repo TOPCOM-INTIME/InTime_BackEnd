@@ -22,6 +22,7 @@ public class OdsayApiController {
 		try {
 			return odsayService.requestApi(gpsDto.getSx(), gpsDto.getSy(), gpsDto.getEx(), gpsDto.getEy());
 		} catch (IOException e) {
+			System.out.println("TAGGGG222:");
 			e.printStackTrace();
 		}
 		return null;
