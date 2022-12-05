@@ -78,6 +78,8 @@ public class SchedulePoolService {
 		System.out.println("TAGGGGG2222 : " + pool_List);
 		List<ScheduleInvitationDto> invitationDtoList = new ArrayList<>();
 		for (SchedulePool pool : pool_List) {
+			System.out.println("TAGG33 : " + pool);
+			System.out.println("TAGG44 : " + pool.getSchedules().get(0));
 			invitationDtoList.add(
 					ScheduleInvitationDto.builder()
 					.schedulePoolId(pool.getId())
