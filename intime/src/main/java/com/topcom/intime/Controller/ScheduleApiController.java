@@ -58,7 +58,8 @@ public class ScheduleApiController {
 		int uid = request_user.getId();
 		
 		Schedule savedSchedule = scheduleService.save_schedule(request_user, schedule);
-		
+		readyPatternService.save_pattern_in_schedule(schedule.getReadyPatterns_Ids(), savedSchedule);
+
 //		String schedulePoolId = "user" + uid + "-" + savedSchedule.getId();
 
 		int savedPoolId = schedulePoolService.save_pool(savedSchedule, getPrincipal());
@@ -79,6 +80,8 @@ public class ScheduleApiController {
 		User request_user = getPrincipal();
 		
 		Schedule savedSchedule = scheduleService.save_schedule(request_user, scheduleDto);
+		readyPatternService.save_pattern_in_schedule(schedule.getReadyPatterns_Ids(), savedSchedule);
+
 		scheduleService.update_schedulePoolId(savedSchedule.getId(), pid);
 		schedulePoolService.AcceptScheduleInvite(pid, request_user.getId());
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), savedSchedule.getId());
