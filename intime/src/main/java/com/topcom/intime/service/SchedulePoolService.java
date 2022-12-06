@@ -66,7 +66,7 @@ public class SchedulePoolService {
 		List<Integer> poolIds = membersRepository.mFindSchedulePoolInvited("INVITING", uid);
 		System.out.println("TAG : 현재 초대 받는 중인 PoolIds : " + poolIds);
 		List<SchedulePool> pool_List = new ArrayList<>();
-		System.out.println("TAG : poolIds의 길이 : " + poolIds.size())
+		System.out.println("TAG : poolIds의 길이 : " + poolIds.size());
 		if(poolIds.size() > 0) {
 			for(int poolId : poolIds) {
 				System.out.println("TAG : 루프안의 PoolId : " + poolId);
