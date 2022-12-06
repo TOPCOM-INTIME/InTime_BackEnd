@@ -77,10 +77,13 @@ public class SchedulePoolService {
 		List<SchedulePool> pool_List = new ArrayList<>();
 
 		for (int poolId : poolIds) {
+			System.out.println("TAGG PID : " + poolId);
 			SchedulePool sPool = schedulePoolRepository.findById(poolId)
 					.orElseThrow(()->{
 						return new IllegalArgumentException("Failed to find Pool By Id : " + poolId);
 					});
+			System.out.println("TAGG Fineded pool : " + sPool);
+
 			pool_List.add(sPool);
 		}
 		System.out.println("TAGGGGG2222 : " + pool_List);
