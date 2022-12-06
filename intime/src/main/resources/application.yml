@@ -10,7 +10,7 @@ server:
     additional-tld-skip-patterns: "*.jar"
 
 
-spring:
+spring:      
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/intimeDB?serverTimezone=Asia/Seoul #jdbc:mysql://localhost:3306/intimedb_local?serverTimezone=Asia/Seoul
@@ -30,7 +30,7 @@ spring:
       use-new-id-generator-mappings: false
     show-sql: true #console에 sql 출력
     properties:
-      hibernate.format_sql: true #console에 sql 출력시 깔끔하게 정렬되서 출력
+      hibernate.format_sql: false #console에 sql 출력시 깔끔하게 정렬되서 출력
 
   jackson:
     serialization:
