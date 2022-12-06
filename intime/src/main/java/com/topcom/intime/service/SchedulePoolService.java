@@ -64,24 +64,27 @@ public class SchedulePoolService {
 	@Transactional
 	public List<ScheduleInvitationDto> findScheduleInvitations(int uid) {
 		List<Integer> poolIds = membersRepository.mFindSchedulePoolInvited("INVITING", uid);
-		System.out.println("TAGGGGG : " + poolIds);
+		System.out.println("TAG : 현재 초대 받는 중인 PoolIds : " + poolIds);
 		List<SchedulePool> pool_List = new ArrayList<>();
+		System.out.println("TAG : poolIds의 길이 : " + poolIds.size())
 		if(poolIds.size() > 0) {
 			for(int poolId : poolIds) {
+				System.out.println("TAG : 루프안의 PoolId : " + poolId);
+
 				SchedulePool findedPool = schedulePoolRepository.findById(poolId)
 						.orElseThrow(()->{
 							return new IllegalArgumentException("Failed to find Pool By Id : " + poolId);
 						});
-				System.out.println("TAGGGGG1111 : " + findedPool);
+				System.out.println("TAG : PoolId인 SchedulePool :  " + findedPool);
 
 				pool_List.add(findedPool);
 			}
-			System.out.println("TAGGGGG2222 : " + pool_List);
+			System.out.println("TAG : 찾아진 Pool_List : " + pool_List);
 		}
+		System.out.println("TAG : if()문 탈출 ");
 		List<ScheduleInvitationDto> invitationDtoList = new ArrayList<>();
 		for (SchedulePool pool : pool_List) {
-			System.out.println("TAGG33 : " + pool);
-			System.out.println("TAGG44 : " + pool.getSchedules().get(0));
+			System.out.println("TAG : pool정보 : " + pool);
 			invitationDtoList.add(
 					ScheduleInvitationDto.builder()
 					.schedulePoolId(pool.getId())
