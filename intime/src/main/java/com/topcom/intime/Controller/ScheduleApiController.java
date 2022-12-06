@@ -80,7 +80,7 @@ public class ScheduleApiController {
 		User request_user = getPrincipal();
 		
 		Schedule savedSchedule = scheduleService.save_schedule(request_user, scheduleDto);
-		readyPatternService.save_pattern_in_schedule(schedule.getReadyPatterns_Ids(), savedSchedule);
+		readyPatternService.save_pattern_in_schedule(scheduleDto.getReadyPatterns_Ids(), savedSchedule);
 
 		scheduleService.update_schedulePoolId(savedSchedule.getId(), pid);
 		schedulePoolService.AcceptScheduleInvite(pid, request_user.getId());
