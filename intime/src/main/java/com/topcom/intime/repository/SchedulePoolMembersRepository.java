@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.topcom.intime.model.SchedulePoolMembers;
 
+import io.lettuce.core.dynamic.annotation.Param;
+
 
 public interface SchedulePoolMembersRepository extends JpaRepository<SchedulePoolMembers, Integer>{
     
@@ -30,7 +32,7 @@ public interface SchedulePoolMembersRepository extends JpaRepository<SchedulePoo
 	
 	@Modifying
 	@Query(value="SELECT SchedulePoolId FROM SchedulePoolMembers m "
-			+ "WHERE m.status = ?1 AND m.userId = ?2", nativeQuery = true)
-	public List<Integer> mFindSchedulePoolInvited(String status, int uid);
+			+ "WHERE m.status = :status AND m.userId = :uid", nativeQuery = true)
+	public List<Integer> mFindSchedulePoolInvited(@Param("status")String status, @Param("uid")int uid);
 
 }
