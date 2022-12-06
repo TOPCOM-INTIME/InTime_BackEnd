@@ -74,7 +74,15 @@ public class SchedulePoolService {
 	public List<ScheduleInvitationDto> findScheduleInvitations(int uid) {
 		List<Integer> poolIds = membersRepository.mFindSchedulePoolInvited("INVITING", uid);
 		System.out.println("TAGGGGG : " + poolIds);
-		List<SchedulePool> pool_List = schedulePoolRepository.findAllById(poolIds);
+		List<SchedulePool> pool_List = new ArrayList<>();
+
+		for (int poolId : poolIds) {
+			SchedulePool sPool = schedulePoolRepository.findById(poolId)
+					.orElseThrow(()->{
+						return new IllegalArgumentException("Failed to find Pool By Id : " + poolId);
+					});
+			pool_List.add(sPool);
+		}
 		System.out.println("TAGGGGG2222 : " + pool_List);
 		List<ScheduleInvitationDto> invitationDtoList = new ArrayList<>();
 		for (SchedulePool pool : pool_List) {
