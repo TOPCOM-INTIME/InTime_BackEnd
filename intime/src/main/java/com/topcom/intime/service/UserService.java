@@ -2,8 +2,14 @@ package com.topcom.intime.service;
 
 import com.topcom.intime.Dto.UpdatePasswordReqDto;
 import com.topcom.intime.Dto.UpdateUsernameReqDto;
+import com.topcom.intime.Dto.UserResDto;
+import com.topcom.intime.WebController.Dto.webJoinDto;
 import com.topcom.intime.exception.APIException;
 import com.topcom.intime.exception.ResourceNotFoundException;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -37,6 +43,21 @@ public class UserService {
 	}
 	
 	@Transactional
+	public boolean adminJoin(webJoinDto joinDto) {
+		User user = new User();
+		user.setEmail(joinDto.getEmail());
+		user.setPassword(bCryptPasswordEncoder.encode(joinDto.getPassword()));
+		user.setUsername(joinDto.getUsername());
+		if(joinDto.getType().equals("admin")) {
+			user.setRoles("ROLE_ADMIN");
+		} else {
+			user.setRoles("ROLE_ADVERTISER");
+		}
+		userRepository.save(user);
+		return true;
+	}
+	
+	@Transactional
 	public User findUser(String email) {
 
 		User user = userRepository.findByEmail(email)
@@ -44,6 +65,21 @@ public class UserService {
 					return null;
 				});
 		return user;
+	}
+	
+	@Transactional
+	public List<UserResDto> getAllUsers() {
+		List<UserResDto> userDtoList = new ArrayList<>();
+		List<User> users = userRepository.mfindAllUsersByType("ROLE_USER");
+		for(User user : users) {
+			UserResDto userDto = UserResDto.builder()
+					.id(user.getId())
+					.email(user.getEmail())
+					.username(user.getUsername())
+					.build();
+			userDtoList.add(userDto);
+		}
+		return userDtoList;
 	}
 	
 	@Transactional
