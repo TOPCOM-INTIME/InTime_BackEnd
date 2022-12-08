@@ -62,7 +62,7 @@ public class AdminApiController {
 	}
 	
 	@DeleteMapping("admin/notice={id}") 
-	public ResponseDto<Integer> deleteNoticeById (@PathVariable("id")int id, @RequestBody NoticeResDto noticeDto) {
+	public ResponseDto<Integer> deleteNoticeById (@PathVariable("id")int id) {
 		noticeService.deleteNoticeById(id);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
