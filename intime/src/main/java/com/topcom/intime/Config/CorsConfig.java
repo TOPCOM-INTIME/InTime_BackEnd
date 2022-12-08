@@ -18,7 +18,7 @@ public class CorsConfig {
 		config.addAllowedHeader("*"); // 모든 헤더에 응답 허용
 		config.addAllowedMethod("*"); // 모든 CRUD 허용
 		source.registerCorsConfiguration("/api/**", config);
-		System.out.println("CorsFilter TAG");
+		System.out.println("CorsConfig TAG");
 		return new CorsFilter(source);
 	}
 }
