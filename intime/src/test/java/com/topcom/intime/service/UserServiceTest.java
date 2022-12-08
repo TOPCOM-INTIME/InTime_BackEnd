@@ -48,4 +48,5 @@ public class UserServiceTest {
         user.setUsername("test3");
         assertThat(user.getUsername()).isEqualTo("test3");
     }
+
 }
