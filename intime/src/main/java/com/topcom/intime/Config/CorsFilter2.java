@@ -37,7 +37,7 @@ public class CorsFilter2 implements Filter {
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Headers",
                 "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-        response.setHeader("Access-Control-Expose-Headers", "*");
+        response.setHeader("Access-Control-Expose-Headers", "*");//React에서 Header노출 허용 범위 설정
 
         if("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
