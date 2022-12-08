@@ -69,9 +69,9 @@ class FriendsServiceTest {
     @Test
     void deleteFriendsTest(){
         User friend=userRepository.findByUsername("지각쟁이").orElseThrow(()->new APIException(HttpStatus.NOT_FOUND, "존재하지 않는 닉네임입니다."));
-        Friends friends=friendsRepository.findByFriendIdAndUserId(friend.getId(), 1).orElseThrow(()->new APIException(HttpStatus.NOT_FOUND, "친구 목록에 없는 계정을 삭제할 수 없습니다."));
+        Friends friends=friendsRepository.findByFriendIdAndUserId(friend.getId(), 3).orElseThrow(()->new APIException(HttpStatus.NOT_FOUND, "친구 목록에 없는 계정을 삭제할 수 없습니다."));
         friendsRepository.delete(friends);
-        Assert.assertFalse(friendsRepository.existsById(1)); //10번 친구관계 삭제됬는지 test, 10번 친구관계 삭제 안 됬을 시에 False 반환//
+        Assert.assertFalse(friendsRepository.existsById(4)); //10번 친구관계 삭제됬는지 test, 10번 친구관계 삭제 안 됬을 시에 False 반환//
     }
 
     //친구 요청 Test//
@@ -105,7 +105,7 @@ class FriendsServiceTest {
     //친구 요청 목록 가져오기 test//
     @Test
     void getAllRequestsTest(){
-        List<Friends> friends=friendsRepository.findAllByFriendId(4);
+        List<Friends> friends=friendsRepository.findAllByFriendId(12);
         List<FriendsReqListDto> requests=new ArrayList<>();
         for(Friends friend: friends){
             List<User> users=userRepository.findAllById(friend.getUser().getId());
