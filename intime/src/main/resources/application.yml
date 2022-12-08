@@ -13,9 +13,9 @@ server:
 spring:      
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/intimeDB?serverTimezone=Asia/Seoul #jdbc:mysql://localhost:3306/intimedb_local?serverTimezone=Asia/Seoul
-    username: intime
-    password: intime123
+    url: jdbc:mysql://localhost:3306/intimedb_local?serverTimezone=Asia/Seoul
+    username: root
+    password: jk898989@
 
   mvc:
     pathmatch:
@@ -37,7 +37,7 @@ spring:
       fail-on-empty-beans: false
 
   redis:
-    host: redisc-dr2ie.vpc-cdb.ntruss.com
+    host: localhost #redisc-dr2ie.vpc-cdb.ntruss.com
     port: 6379
 
 jwt:
