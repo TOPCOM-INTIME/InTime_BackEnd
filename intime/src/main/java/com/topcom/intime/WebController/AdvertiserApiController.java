@@ -1,21 +1,21 @@
 package com.topcom.intime.WebController;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.topcom.intime.Dto.ResponseDto;
+import com.topcom.intime.Dto.AdBannerResDto;
 import com.topcom.intime.auth.PrincipalDetails;
 import com.topcom.intime.model.User;
 import com.topcom.intime.service.AdBannerService;
@@ -25,9 +25,6 @@ public class AdvertiserApiController {
 
 	@Autowired
 	private AdBannerService adBannerService;
-
-	/*getClass().getResourceAsStream의 기본 경로는 ../resources이다.*/
-	private String filePath = "/static/image/AdBanners";
 
 	@PostMapping("advertiser/adBanner")
 	public ResponseDto<Integer> UploadAdBanner(@RequestParam("banner") MultipartFile banner) {
@@ -39,6 +36,31 @@ public class AdvertiserApiController {
 
 		}
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), savedFileId);
+	}
+	
+	@GetMapping(value = "advertiser/myAdBanner/all")
+	public List<AdBannerResDto> getMyBanners() {
+		
+		return adBannerService.getAllBannersByUid(getPrincipal().getId());
+	}
+	
+	@PutMapping("advertiser/adBanner={id}")
+	public ResponseDto<Integer> changeBannerById(@PathVariable("id")int id, @RequestParam("banner") MultipartFile banner) {
+		
+		int is_success = adBannerService.updateBannerById(id, getPrincipal().getId(), banner);
+		if (is_success == 1) {
+			return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+		} else {
+			return new ResponseDto<Integer>(HttpStatus.NOT_MODIFIED.value(), -1);
+		}
+
+	}
+	
+	@DeleteMapping("advertiser/adBanner={id}")
+	public ResponseDto<Integer> deleteBannerById(@PathVariable("id")int id) {
+		
+		adBannerService.deleteBannerById(id);
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}
 
 //	@GetMapping(value = "advertiser/adBanner", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
