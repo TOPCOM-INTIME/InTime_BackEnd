@@ -13,7 +13,7 @@ server:
 spring:      
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/intimeDB?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://localhost:3306/intimeDB?serverTimezone=Asia/Seoul #jdbc:mysql://localhost:3306/intimedb_local?serverTimezone=Asia/Seoul
     username: intime
     password: intime123
 
