@@ -141,8 +141,8 @@ public class ScheduleService {
 		} else {
 			membersRepository.deleteByschedulePoolId(finded_schedule.getSchedulePool().getId());
 			schedulePoolRepository.deleteById(finded_schedule.getSchedulePool().getId());
+			scheduleRepository.deleteById(sid);
 		}
-		scheduleRepository.deleteById(sid);
 	}
 	
 	@Transactional
