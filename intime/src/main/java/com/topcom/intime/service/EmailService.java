@@ -30,12 +30,33 @@ public class EmailService {
 
     }
 
+    private MimeMessage createAuthMessage(String to, String code) throws Exception{
+        MimeMessage message=emailSender.createMimeMessage();
+        message.addRecipients(MimeMessage.RecipientType.TO, to);
+        message.setSubject("인타임 어플 인증 비밀번호");
+
+        String msg="회원의 어플 인증 번호는: "+code+"입니다. 빠른 시간내에 입력해주시기 바랍니다.";
+        message.setText(msg, "utf-8", "html");
+        message.setFrom(new InternetAddress("intimeajou@gmail.com", "인타임"));
+        return message;
+
+    }
     public String sendMessage(String to, String code) throws Exception{
         MimeMessage message=createMessage(to, code);
         try{
             emailSender.send(message);
         }catch(MailException es){
-            es.printStackTrace();;
+            es.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+        return code;
+    }
+    public String sendAuthMessage(String to, String code) throws Exception{
+        MimeMessage message=createAuthMessage(to, code);
+        try{
+            emailSender.send(message);
+        }catch(MailException es){
+            es.printStackTrace();
             throw new IllegalArgumentException();
         }
         return code;

@@ -49,4 +49,11 @@ public class UserServiceTest {
         assertThat(user.getUsername()).isEqualTo("test3");
     }
 
+    @Test
+    public void deleteUser(){
+        User user=userRepository.findByEmail("test2@test.com").orElseThrow(()->new APIException(HttpStatus.NOT_FOUND, "존재하지 않은 닉네임입니다."));
+        userRepository.delete(user);
+        assertThat(userRepository.findByEmail("test2@test.com")).isEmpty();
+    }
+
 }

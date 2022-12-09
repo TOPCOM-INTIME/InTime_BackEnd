@@ -4,6 +4,7 @@ import com.topcom.intime.exception.ResourceNotFoundException;
 import com.topcom.intime.model.User;
 import com.topcom.intime.repository.UserRepository;
 import com.topcom.intime.service.EmailService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ public class EmailApiController {
         this.bCryptPasswordEncoder=bCryptPasswordEncoder;
     }
 
+    @ApiOperation(value = "sending an email of temporary password")
     @GetMapping("/email")
     public ResponseEntity<String> sendEmail(@RequestParam String email){
         try{
@@ -41,5 +43,13 @@ public class EmailApiController {
             return new ResponseEntity<>("이메일 전송 실패", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("이메일 전송 성공", HttpStatus.OK);
+    }
+
+    @ApiOperation(value="verifying email of someone hoping to join the app")
+    @GetMapping("/verify")
+    public String sendAuthEmail(@RequestParam String email) throws Exception {
+        String code=emailService.createKey();
+        emailService.sendAuthMessage(email, code);
+        return code;
     }
 }
