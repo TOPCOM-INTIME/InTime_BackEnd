@@ -14,6 +14,7 @@ import com.topcom.intime.model.ReadyPattern;
 import com.topcom.intime.model.Schedule;
 import com.topcom.intime.model.User;
 import com.topcom.intime.repository.ReadyPatternRepository;
+import com.topcom.intime.repository.SchedulePoolMembersRepository;
 import com.topcom.intime.repository.SchedulePoolRepository;
 import com.topcom.intime.repository.ScheduleRepository;
 
@@ -22,8 +23,8 @@ public class ScheduleService {
 
 	@Autowired
 	private ScheduleRepository scheduleRepository;
-//	@Autowired
-//	private SchedulePoolMembersRepository membersRepository;
+	@Autowired
+	private SchedulePoolMembersRepository membersRepository;
 	@Autowired
 	private SchedulePoolRepository schedulePoolRepository;
 	@Autowired
@@ -131,7 +132,17 @@ public class ScheduleService {
 	
 	@Transactional
 	public void delete_scheduleById(int sid) {
-		scheduleRepository.deleteById(sid);
+		Schedule finded_schedule = scheduleRepository.findById(sid)
+				.orElseThrow(()->{
+					return new IllegalArgumentException("Failed to find Schedule By Id : " + sid);
+				});
+		if(finded_schedule.getSchedulePool() == null) {
+			scheduleRepository.deleteById(sid);
+		} else {
+			membersRepository.deleteByschedulePoolId(finded_schedule.getSchedulePool().getId());
+			schedulePoolRepository.deleteById(finded_schedule.getSchedulePool().getId());
+			scheduleRepository.deleteById(sid);
+		}
 	}
 	
 	@Transactional
