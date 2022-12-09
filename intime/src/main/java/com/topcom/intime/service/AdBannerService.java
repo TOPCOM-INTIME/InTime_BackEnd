@@ -65,6 +65,7 @@ public class AdBannerService {
 	
 	@Transactional
 	public int saveFile(MultipartFile file, User user) {
+		System.out.println("TAG : FilePath : " + filePath);
 
 		try {
 			boolean is_success = saveFileInSpringBoot(file, user.getId());
@@ -74,7 +75,7 @@ public class AdBannerService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+		
 		AdBanner adBanner = AdBanner.builder()
 				.advertiser(user)
 				.fileName(file.getOriginalFilename())
