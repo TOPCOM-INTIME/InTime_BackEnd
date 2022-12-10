@@ -44,11 +44,11 @@ public class AdBannerService {
 				.orElseThrow(()->{
 					return new IllegalArgumentException("Failed to find AdBanner By Id : " + id);
 				});
-		if (deleteFileInSpringBoot(uid, findedAdBanner.getFileName())) {
+		String filename = uid + "_" + file.getOriginalFilename();
+		if (deleteFileInSpringBoot(filename)) {
 			findedAdBanner.setFileName(file.getOriginalFilename());
-			findedAdBanner.setFilePath("/image/AdBanners/" + uid + "/" + file.getOriginalFilename());
+			findedAdBanner.setFilePath("/AdBanners/" + "/" + file.getOriginalFilename());
 			try {
-				String filename = uid + "_" + file.getOriginalFilename();
 				boolean is_success = saveFileInSpringBoot(file, uid, filename);
 				if (!is_success) {
 					return 0;
@@ -63,15 +63,19 @@ public class AdBannerService {
 	
 	@Transactional
 	public void deleteBannerById(int id) {
-
-		adBannerRepository.deleteById(id);
+		AdBanner findedAdBanner = adBannerRepository.findById(id)
+				.orElseThrow(()->{
+					return new IllegalArgumentException("Failed to find AdBanner By Id : " + id);
+				});
+		String filename = findedAdBanner.getFileName();
+		
+		if (deleteFileInSpringBoot(filename)) {
+			adBannerRepository.deleteById(id);
+		}
 	}
 	
 	@Transactional
 	public int saveFile(MultipartFile file, User user) {
-//		System.out.println("TAG : FilePath : " + currentPath + filePath);
-//		System.out.println("TAG : FilePath1111111111 : " + filePath);
-//		System.out.println("TAG : FilePath3333333333 : " + System.getProperty("user.dir"));
 
 		String filename = user.getId() + "_" + file.getOriginalFilename();
 		try {
@@ -86,7 +90,7 @@ public class AdBannerService {
 		AdBanner adBanner = AdBanner.builder()
 				.advertiser(user)
 				.fileName(filename)
-				.filePath("/AdBanners/" + file.getOriginalFilename()).build();
+				.filePath("/AdBanners/" + filename).build();
 
 		int adBannerId = adBannerRepository.save(adBanner).getId();
 		return adBannerId;
@@ -104,7 +108,7 @@ public class AdBannerService {
 		return true;
 	}
 	
-	public boolean deleteFileInSpringBoot(int uid, String filename) {
+	public boolean deleteFileInSpringBoot(String filename) {
 		boolean is_success = false;
 		File file = new File(currentPath + filePath + "/" +  filename);
 		if(file.exists()) {
