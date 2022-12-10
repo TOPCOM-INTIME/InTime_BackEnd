@@ -132,16 +132,22 @@ public class ScheduleService {
 	
 	@Transactional
 	public void delete_scheduleById(int sid) {
+		System.out.println("TAG11 : " + sid);
+
 		Schedule finded_schedule = scheduleRepository.findById(sid)
 				.orElseThrow(()->{
 					return new IllegalArgumentException("Failed to find Schedule By Id : " + sid);
 				});
+		System.out.println("TAGG1");
+		System.out.println("TAG F : " + finded_schedule.getSchedulePool());
+
 		if(finded_schedule.getSchedulePool() == null) {
 			scheduleRepository.deleteById(sid);
 		} else {
-			membersRepository.deleteByschedulePoolId(finded_schedule.getSchedulePool().getId());
-			schedulePoolRepository.deleteById(finded_schedule.getSchedulePool().getId());
-			scheduleRepository.deleteById(sid);
+			int pid = finded_schedule.getSchedulePool().getId();
+			System.out.println("TAGG2 : " + pid);
+			membersRepository.deleteByschedulePoolId(pid);
+			schedulePoolRepository.deleteById(pid);
 		}
 	}
 	
