@@ -10,9 +10,10 @@ server:
     additional-tld-skip-patterns: "*.jar"
 
 
-spring:    
-  profiles:
-    default: dev  
+spring:      
+  config:
+    activate:
+      on-profile: dev
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/intimeDB?serverTimezone=Asia/Seoul #jdbc:mysql://localhost:3306/intimedb_local?serverTimezone=Asia/Seoul
@@ -45,8 +46,6 @@ spring:
 jwt:
   secretKey: intime123
   expiration-milliseconds: 60000000 #10분
-  
+
 file:
-  bannerUploadPath: /src/main/resources/static/image/AdBanners
-
-
+  bannerUploadPath: opt/tomcat/latest/webapps/AdBanners
