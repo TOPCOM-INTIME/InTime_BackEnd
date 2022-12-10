@@ -56,7 +56,7 @@ public class AdminApiController {
 	}
 	
 	@PutMapping("admin/notice={id}")
-	public ResponseDto<Integer> updateNoticeById (@PathVariable("id")int id, @RequestBody NoticeResDto noticeDto) {
+	public ResponseDto<Integer> updateNoticeById (@PathVariable("id")int id, @RequestBody NoticeReqDto noticeDto) {
 		noticeService.updateNoticeById(id, noticeDto);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 	}

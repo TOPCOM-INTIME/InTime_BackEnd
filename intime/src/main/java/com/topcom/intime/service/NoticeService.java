@@ -41,7 +41,7 @@ public class NoticeService {
 	}
 	
 	@Transactional
-	public void updateNoticeById(int id, NoticeResDto noticeDto) {
+	public void updateNoticeById(int id, NoticeReqDto noticeDto) {
 		Notice notice = noticeRepository.findById(id)
 		.orElseThrow(()->{
 			return new IllegalArgumentException("Failed to find Notice By Id : " + id);
