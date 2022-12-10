@@ -31,6 +31,8 @@ public class AdBannerService {
 	public AdBannerResDto getRandomBanner() {
 		AdBanner randomBanner = adBannerRepository.findRandomBanner();
 
+		int impression = randomBanner.getImpression();
+		adBannerRepository.AddOnetoImpression(++impression, randomBanner.getId());
 		AdBannerResDto adBannerResDto = new AdBannerResDto(
 				randomBanner.getId(), randomBanner.getFilePath(),
 				randomBanner.getFileName(), randomBanner.getUrl()
@@ -104,6 +106,7 @@ public class AdBannerService {
 				.advertiser(user)
 				.fileName(filename)
 				.url(url)
+				.impression(0)
 				.filePath("/AdBanners/" + filename).build();
 
 		int adBannerId = adBannerRepository.save(adBanner).getId();
