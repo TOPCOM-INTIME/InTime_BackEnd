@@ -52,6 +52,7 @@ public class FriendService {
                     friendResDto.setId(user.getId());
                     friendResDto.setUsername(user.getUsername());
                     friendResDto.setDeviceToken(user.getDeviceToken());
+                    friendResDto.setLateCount(user.getLateCount());
                     friendResDtoList.add(friendResDto);
                 }
             }

@@ -14,5 +14,5 @@ public class UserResDto {
 	private int id;
 	private String email;
 	private String username;
-
+	private Integer lateCount;
 }

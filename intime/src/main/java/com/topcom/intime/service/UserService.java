@@ -68,6 +68,22 @@ public class UserService {
 	}
 	
 	@Transactional
+	public Integer plusLateCount(int uid) {
+		User user = userRepository.findById(uid)
+				.orElseThrow(()->{
+					return new IllegalArgumentException("Failed to find user By Id : " + uid);
+				});
+		Integer lateCount = user.getLateCount();
+		if(lateCount == null) {
+			lateCount = 1;
+			user.setLateCount(lateCount);
+		} else {
+			user.setLateCount(++lateCount);
+		}
+		return lateCount;
+	}
+	
+	@Transactional
 	public List<UserResDto> getAllUsers() {
 		List<UserResDto> userDtoList = new ArrayList<>();
 		List<User> users = userRepository.mfindAllUsersByType("ROLE_USER");
