@@ -11,4 +11,5 @@ public class AdBannerResDto {
 	private String fileUrl;
 	private String filename;
 	private String url;
+	private Integer impression;
 }
