@@ -95,6 +95,9 @@ public class AdBannerService {
 	public int saveFile(MultipartFile file, String url, User user) {
 
 		String filename = user.getId() + "_" + file.getOriginalFilename();
+		String filepath = "/AdBanners/" + filename;
+		System.out.println("FILENAME LOG : " + filename);
+		System.out.println("FILEPATH LOG : " + filepath);
 		try {
 			boolean is_success = saveFileInSpringBoot(file, user.getId(), filename);
 			if (!is_success) {
