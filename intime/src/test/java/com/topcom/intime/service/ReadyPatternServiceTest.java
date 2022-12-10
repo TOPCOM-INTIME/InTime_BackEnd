@@ -41,7 +41,7 @@ class ReadyPatternServiceTest {
     void updatePatternTest(){
         Random random=new Random();
         int newTime=random.nextInt(100);
-        ReadyPattern readyPattern = readyPatternRepository.findById(3)
+        ReadyPattern readyPattern = readyPatternRepository.findById(2)
                 .orElseThrow(()->{
                     return new IllegalArgumentException("Failed to find ReadyPatten by id: " + 1);
                 });
@@ -57,7 +57,7 @@ class ReadyPatternServiceTest {
         ReadyPattern readyPattern=readyPatternRepository.findById(1).orElseThrow(()->{
             return new IllegalArgumentException("Failed to find ReadyPattern by id : " + 1);
         });
-        Schedule schedule=scheduleRepository.findById(1).orElseThrow(()->{
+        Schedule schedule=scheduleRepository.findById(38).orElseThrow(()->{
             return new IllegalArgumentException("Failed to find Schedule by id : " + 1);
         });
 
