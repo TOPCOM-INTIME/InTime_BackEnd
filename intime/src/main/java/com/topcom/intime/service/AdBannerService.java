@@ -8,6 +8,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,11 +19,13 @@ import com.topcom.intime.repository.AdBannerRepository;
 
 @Service
 public class AdBannerService {
-
+	
 	@Autowired
 	private AdBannerRepository adBannerRepository;
 
-	private String filePath = System.getProperty("user.dir") + "/src/main/resources/static/image/AdBanners";
+	@Value("${file.bannerUploadPath}")
+	private String filePath;//함수 안에서만써야함.
+	private String currentPath = System.getProperty("user.dir");
 	
 	@Transactional
 	public List<AdBannerResDto> getAllBannersByUid(int uid) {
@@ -45,7 +48,8 @@ public class AdBannerService {
 			findedAdBanner.setFileName(file.getOriginalFilename());
 			findedAdBanner.setFilePath("/image/AdBanners/" + uid + "/" + file.getOriginalFilename());
 			try {
-				boolean is_success = saveFileInSpringBoot(file, uid);
+				String filename = uid + "_" + file.getOriginalFilename();
+				boolean is_success = saveFileInSpringBoot(file, uid, filename);
 				if (!is_success) {
 					return 0;
 				}
@@ -65,10 +69,13 @@ public class AdBannerService {
 	
 	@Transactional
 	public int saveFile(MultipartFile file, User user) {
-		System.out.println("TAG : FilePath : " + filePath);
+//		System.out.println("TAG : FilePath : " + currentPath + filePath);
+//		System.out.println("TAG : FilePath1111111111 : " + filePath);
+//		System.out.println("TAG : FilePath3333333333 : " + System.getProperty("user.dir"));
 
+		String filename = user.getId() + "_" + file.getOriginalFilename();
 		try {
-			boolean is_success = saveFileInSpringBoot(file, user.getId());
+			boolean is_success = saveFileInSpringBoot(file, user.getId(), filename);
 			if (!is_success) {
 				return 0;
 			}
@@ -78,33 +85,28 @@ public class AdBannerService {
 		
 		AdBanner adBanner = AdBanner.builder()
 				.advertiser(user)
-				.fileName(file.getOriginalFilename())
-				.filePath("/image/AdBanners/" + user.getId() + "/" + file.getOriginalFilename()).build();
+				.fileName(filename)
+				.filePath("/AdBanners/" + file.getOriginalFilename()).build();
 
 		int adBannerId = adBannerRepository.save(adBanner).getId();
 		return adBannerId;
 	}
 
-	public boolean saveFileInSpringBoot(MultipartFile file, int uid) throws Exception {
+	public boolean saveFileInSpringBoot(MultipartFile file, int uid, String filename) throws IllegalStateException, IOException {
 
-		if (mkdir(uid)) {
-			String savePath = filePath + "/" + uid;
-			String fileName = file.getOriginalFilename();
-			File savedFile = new File(savePath, fileName);
-			if (savedFile.exists()) {
-				System.out.println(fileName + " already exists");
-				return false;
-			}
-			file.transferTo(savedFile);
-			return true;
+		String savePath = currentPath + filePath;
+		File savedFile = new File(savePath, filename);
+		if (savedFile.exists()) {
+			System.out.println(filename + " already exists");
+			return false;
 		}
-
-		throw new IOException("Failed to save file : " + file);
+		file.transferTo(savedFile);
+		return true;
 	}
 	
 	public boolean deleteFileInSpringBoot(int uid, String filename) {
 		boolean is_success = false;
-		File file = new File(filePath + "/" + uid + "/" + filename);
+		File file = new File(currentPath + filePath + "/" +  filename);
 		if(file.exists()) {
 			if(file.delete()) {
 				is_success = true;
@@ -114,19 +116,19 @@ public class AdBannerService {
 	}
 
 	public boolean mkdir(int dirName) {
-		File dir = new File(filePath + "/" + dirName);
+		File dir = new File(currentPath + filePath + "/" + dirName);
 		boolean is_success = false;
 		
 		if (!dir.exists()) {
 			try {
 				dir.mkdir();
-				System.out.println(filePath + "/" + dirName + " is created.");
+				System.out.println(currentPath + filePath + "/" + dirName + " is created.");
 				is_success = true;
 			} catch (Exception e) {
 				e.getStackTrace();
 			}
 		} else {
-			System.out.println(filePath + "/" + dirName + " is already exists.");
+			System.out.println(currentPath + filePath + "/" + dirName + " is already exists.");
 			is_success = true;
 		}
 		return is_success;
