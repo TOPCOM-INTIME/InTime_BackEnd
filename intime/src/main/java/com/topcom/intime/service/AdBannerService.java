@@ -135,8 +135,12 @@ public class AdBannerService {
 	public boolean deleteFileInSpringBoot(String filename) {
 		boolean is_success = false;
 		File file = new File(currentPath + filePath + "/" +  filename);
+		System.out.println("TAG : DELETE FILEPATH : " + currentPath + filePath + "/" + filename);
+
 		if(file.exists()) {
+			System.out.println("TAG : IS_EXISTS");
 			if(file.delete()) {
+				System.out.println("TAG : IS_DELETE");
 				is_success = true;
 			}
 		}
