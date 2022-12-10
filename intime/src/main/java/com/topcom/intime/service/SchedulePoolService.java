@@ -55,7 +55,7 @@ public class SchedulePoolService {
 		List<UserResDto> userDtoList = new ArrayList<>();
 		for (SchedulePoolMembers member : schedulePoolMembersList) {
 			UserResDto userDto = new UserResDto(member.getUser().getId(), member.getUser().getUsername(),
-					member.getUser().getEmail());
+					member.getUser().getEmail(), member.getUser().getLateCount());
 			userDtoList.add(userDto);
 		}
 		return userDtoList;
@@ -105,7 +105,7 @@ public class SchedulePoolService {
 		for (SchedulePoolMembers member : schedulePoolMembersList) {
 			if (member.getStatus().equals("LEADER") || member.getStatus().equals("OK")) {
 				UserResDto userDto = new UserResDto(member.getUser().getId(), member.getUser().getUsername(),
-						member.getUser().getEmail());
+						member.getUser().getEmail(), member.getUser().getLateCount());
 				userDtoList.add(userDto);
 			}
 		}
