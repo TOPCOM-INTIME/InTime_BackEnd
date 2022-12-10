@@ -36,6 +36,7 @@ public class AdBannerService {
 		AdBannerResDto adBannerResDto = new AdBannerResDto(
 				randomBanner.getId(), randomBanner.getFilePath(),
 				randomBanner.getFileName(), randomBanner.getUrl()
+				,randomBanner.getImpression()
 				);
 		return adBannerResDto;
 	}
@@ -47,7 +48,8 @@ public class AdBannerService {
 		List<AdBannerResDto> adBannerResDtos = new ArrayList<>();
 		for (AdBanner adBanner : adBanners) {
 			adBannerResDtos.add(new AdBannerResDto(adBanner.getId(),
-					adBanner.getFilePath(), adBanner.getFileName(), adBanner.getUrl()));
+					adBanner.getFilePath(), adBanner.getFileName()
+					, adBanner.getUrl(), adBanner.getImpression()));
 		}
 		return adBannerResDtos;
 	}
