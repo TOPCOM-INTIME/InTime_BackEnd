@@ -26,6 +26,19 @@ public class AdBannerService {
 	@Value("${file.bannerUploadPath}")
 	private String filePath;//함수 안에서만써야함.
 	private String currentPath = System.getProperty("user.dir");
+		
+	@Transactional
+	public AdBannerResDto getRandomBanner() {
+		AdBanner randomBanner = adBannerRepository.findRandomBanner();
+
+		int impression = randomBanner.getImpression();
+		adBannerRepository.AddOnetoImpression(++impression, randomBanner.getId());
+		AdBannerResDto adBannerResDto = new AdBannerResDto(
+				randomBanner.getId(), randomBanner.getFilePath(),
+				randomBanner.getFileName(), randomBanner.getUrl()
+				);
+		return adBannerResDto;
+	}
 	
 	@Transactional
 	public List<AdBannerResDto> getAllBannersByUid(int uid) {
@@ -33,13 +46,14 @@ public class AdBannerService {
 		List<AdBanner> adBanners = adBannerRepository.findAllByadvertiserId(uid);
 		List<AdBannerResDto> adBannerResDtos = new ArrayList<>();
 		for (AdBanner adBanner : adBanners) {
-			adBannerResDtos.add(new AdBannerResDto(adBanner.getId(), adBanner.getFilePath(), adBanner.getFileName()));
+			adBannerResDtos.add(new AdBannerResDto(adBanner.getId(),
+					adBanner.getFilePath(), adBanner.getFileName(), adBanner.getUrl()));
 		}
 		return adBannerResDtos;
 	}
 	
 	@Transactional
-	public int updateBannerById(int id, int uid, MultipartFile file) {
+	public int updateBannerById(int id, int uid, MultipartFile file, String url) {
 		AdBanner findedAdBanner = adBannerRepository.findById(id)
 				.orElseThrow(()->{
 					return new IllegalArgumentException("Failed to find AdBanner By Id : " + id);
@@ -48,6 +62,7 @@ public class AdBannerService {
 		if (deleteFileInSpringBoot(filename)) {
 			findedAdBanner.setFileName(file.getOriginalFilename());
 			findedAdBanner.setFilePath("/AdBanners/" + "/" + file.getOriginalFilename());
+			findedAdBanner.setUrl(url);
 			try {
 				boolean is_success = saveFileInSpringBoot(file, uid, filename);
 				if (!is_success) {
@@ -75,7 +90,7 @@ public class AdBannerService {
 	}
 	
 	@Transactional
-	public int saveFile(MultipartFile file, User user) {
+	public int saveFile(MultipartFile file, String url, User user) {
 
 		String filename = user.getId() + "_" + file.getOriginalFilename();
 		try {
@@ -90,6 +105,8 @@ public class AdBannerService {
 		AdBanner adBanner = AdBanner.builder()
 				.advertiser(user)
 				.fileName(filename)
+				.url(url)
+				.impression(0)
 				.filePath("/AdBanners/" + filename).build();
 
 		int adBannerId = adBannerRepository.save(adBanner).getId();

@@ -27,15 +27,19 @@ public class AdvertiserApiController {
 	private AdBannerService adBannerService;
 
 	@PostMapping("advertiser/adBanner")
-	public ResponseDto<Integer> UploadAdBanner(@RequestParam("banner") MultipartFile banner) {
+	public ResponseDto<Integer> UploadAdBanner(@RequestParam("banner") MultipartFile banner, @RequestParam("url") String url) {
 
-		System.out.println("Banner IMG : " + banner);
-		int savedFileId = adBannerService.saveFile(banner, getPrincipal());
+		int savedFileId = adBannerService.saveFile(banner, url, getPrincipal());
 		if (savedFileId == 0) {
 			return new ResponseDto<Integer>(HttpStatus.CONFLICT.value(), -1);
 
 		}
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), savedFileId);
+	}
+	
+	@GetMapping("api/randomBanner")
+	public AdBannerResDto getRandomBanner() {
+		return adBannerService.getRandomBanner();
 	}
 	
 	@GetMapping(value = "advertiser/myAdBanner/all")
@@ -45,9 +49,9 @@ public class AdvertiserApiController {
 	}
 	
 	@PutMapping("advertiser/adBanner={id}")
-	public ResponseDto<Integer> changeBannerById(@PathVariable("id")int id, @RequestParam("banner") MultipartFile banner) {
+	public ResponseDto<Integer> changeBannerById(@PathVariable("id")int id, @RequestParam("banner") MultipartFile banner, @RequestParam("url") String url) {
 		
-		int is_success = adBannerService.updateBannerById(id, getPrincipal().getId(), banner);
+		int is_success = adBannerService.updateBannerById(id, getPrincipal().getId(), banner, url);
 		if (is_success == 1) {
 			return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
 		} else {

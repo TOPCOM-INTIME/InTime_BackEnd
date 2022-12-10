@@ -30,4 +30,6 @@ public class AdBanner {
 	
 	private String fileName;
 	private String filePath;
+	private String url;
+	private Integer impression;
 }
