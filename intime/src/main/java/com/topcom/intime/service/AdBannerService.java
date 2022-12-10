@@ -60,7 +60,7 @@ public class AdBannerService {
 				.orElseThrow(()->{
 					return new IllegalArgumentException("Failed to find AdBanner By Id : " + id);
 				});
-		String deleted_filename = uid + "_" + findedAdBanner.getFileName();
+		String deleted_filename = findedAdBanner.getFileName();
 		String new_filename = uid + "_" + file.getOriginalFilename();
 		if (deleteFileInSpringBoot(deleted_filename)) {
 			System.out.println("TAG : SUCCESS DELETE FILE");

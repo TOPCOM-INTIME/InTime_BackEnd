@@ -16,7 +16,7 @@ public interface AdBannerRepository extends JpaRepository<AdBanner, Integer> {
 	public AdBanner findRandomBanner();
 	
 	@Modifying
-	@Query(value = "UPDATE adbanner SET impression = ?1 WHERE id = ?2", nativeQuery = true)
+	@Query(value = "UPDATE adBanner SET impression = ?1 WHERE id = ?2", nativeQuery = true)
 	public int AddOnetoImpression(int impression, int id);
 	
 
