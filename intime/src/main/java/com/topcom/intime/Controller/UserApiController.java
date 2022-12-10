@@ -32,6 +32,7 @@ public class UserApiController {
 				.id(user.getId())
 				.email(user.getEmail())
 				.username(user.getUsername())
+				.lateCount(user.getLateCount())
 				.build();
 		return resDto;
 	}
@@ -43,6 +44,12 @@ public class UserApiController {
 		}
 		userService.Join(joinReqDto);
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+	}
+	
+	@PostMapping("/api/late")
+	public ResponseDto<Integer> plusLateCount() {
+		Integer lateCount = userService.plusLateCount(getPrincipal().getId());
+		return new ResponseDto<Integer>(HttpStatus.OK.value(), lateCount);
 	}
 	
 	@PutMapping("/api/device-token")
