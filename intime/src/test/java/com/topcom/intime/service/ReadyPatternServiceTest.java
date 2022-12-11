@@ -57,8 +57,8 @@ class ReadyPatternServiceTest {
         ReadyPattern readyPattern=readyPatternRepository.findById(1).orElseThrow(()->{
             return new IllegalArgumentException("Failed to find ReadyPattern by id : " + 1);
         });
-        Schedule schedule=scheduleRepository.findById(38).orElseThrow(()->{
-            return new IllegalArgumentException("Failed to find Schedule by id : " + 1);
+        Schedule schedule=scheduleRepository.findById(43).orElseThrow(()->{
+            return new IllegalArgumentException("Failed to find Schedule by id : " + 43);
         });
 
         ReadyPattern clonePattern= ReadyPattern.builder()
