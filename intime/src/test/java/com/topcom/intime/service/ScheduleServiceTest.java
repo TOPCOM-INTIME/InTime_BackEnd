@@ -52,14 +52,14 @@ class ScheduleServiceTest {
     void updateScheduleTest(){
         Random rnd= new Random();
         int newTime= rnd.nextInt(100);
-        Schedule schedule=scheduleRepository.findById(38).orElseThrow(()->{
-            return new IllegalArgumentException("Failed to find Schedule by id: " + 38);
+        Schedule schedule=scheduleRepository.findById(43).orElseThrow(()->{
+            return new IllegalArgumentException("Failed to find Schedule by id: " + 43);
         });
         schedule.setName("최종 발표");
         schedule.setTime(newTime);
         scheduleRepository.save(schedule);
         assertThat(schedule.getName()).isEqualTo("최종 발표");
-        scheduleRepository.delete(schedule);
+
     }
 
 
