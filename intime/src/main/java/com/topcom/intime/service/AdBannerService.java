@@ -64,7 +64,7 @@ public class AdBannerService {
 		String new_filename = uid + "_" + file.getOriginalFilename();
 		if (deleteFileInSpringBoot(deleted_filename)) {
 			System.out.println("TAG : SUCCESS DELETE FILE");
-			findedAdBanner.setFileName(file.getOriginalFilename());
+			findedAdBanner.setFileName(new_filename);
 			findedAdBanner.setFilePath("/AdBanners/" + new_filename);
 			findedAdBanner.setUrl(url);
 			try {
