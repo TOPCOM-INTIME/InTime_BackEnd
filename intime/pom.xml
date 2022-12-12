@@ -17,6 +17,7 @@
 	<description>Intime Project</description>
 	<properties>
 		<java.version>11</java.version>
+		<skipTests>true</skipTests>
 	</properties>
 	<dependencies>
 
