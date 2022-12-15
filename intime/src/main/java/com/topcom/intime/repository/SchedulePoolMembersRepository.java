@@ -1,6 +1,7 @@
 package com.topcom.intime.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -35,4 +36,5 @@ public interface SchedulePoolMembersRepository extends JpaRepository<SchedulePoo
 			+ "WHERE m.status = :status AND m.userId = :uid", nativeQuery = true)
 	public List<Integer> mFindSchedulePoolInvited(@Param("status")String status, @Param("uid")int uid);
 
+	Optional<SchedulePoolMembers> findBySchedulePoolIdAndUserId(int poolId, int userId);
 }

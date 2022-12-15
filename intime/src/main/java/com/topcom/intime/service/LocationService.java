@@ -58,12 +58,6 @@ public class LocationService {
     }
 
     public LocationsDto shareLocations(int scheduleIdx, int useridx){
-    //    List<SchedulePoolMembers> membersList=schedulePoolMembersRepository.findAllByschedulePoolId(scheduleIdx);
-    //    for(SchedulePoolMembers member:membersList){
-    //        if(useridx!= member.getUser().getId()){
-    //            throw new APIException(HttpStatus.BAD_REQUEST, "단체 일정에 포함되지 않은 유저입니다.");
-    //        }
-    //    }
         String strKey=KeyGen.StrKeyGenerated(scheduleIdx);
         User user=userRepository.findById(useridx).orElseThrow(()->new ResourceNotFoundException("User", "useridx", (long)useridx));
         SetOperations<String, Object> setOperations= redisTemplate.opsForSet();
