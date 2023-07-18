@@ -9,7 +9,7 @@ This is a web application code for an App 'InTime'.
 ### 🧷Entity Diagram
 <img src="https://github.com/TOPCOM-INTIME/InTime_BackEnd/assets/76704436/dde965bf-a880-40c6-aea5-e5a877ee8164">
 
-### System skill stacks
+### 🧷System skill stacks
 <img src="https://github.com/TOPCOM-INTIME/InTime_BackEnd/assets/76704436/3977ebf6-d53a-497c-836e-25bec556b30e" width="50%">
 
 ### ⚙Environment Setting
